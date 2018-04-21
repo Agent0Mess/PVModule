@@ -7,6 +7,8 @@ struct time {
     int sec;
     int min;
     int hour;
+
+    time update_format();
 };
 
 
@@ -18,22 +20,34 @@ private:
     float latitude;
     float longitude;
 
-    time woz;                           // Wahre Ortszeit, Sonnenzeit
-    time mez;                           // Lokale Ortszeit
-    int doy;                            // Day of Year; 1. Januar = 1
+    time woz;                           // True local time, solar time
+    time mez;                           // local time
+    time hourangtime;                   // Hour Angle Time
+    int doy;                            // Day of Year; first January = 1
 
-    const float eclipticang=23.45;      // Ekliptikwinkel der Erde
-    float declang;                      // Earth Declination Winkel in Gard
+    const float eclipticang=23.45;      // Eclitic Angle of the Earth
+    float declang;                      // Earth Declination Angle in degrees
     time  hourangref;                   // Referenzzeit für hourang
     float hourang;                      // HA - Hour Angle
     float elevang;                      // Elevation Angle Beta @ Solar Time
-    float azang;                        // Solar Angle Azimut Angle @ Solar time
+    float azang;                        // Solar Angle Azimut, Angle @ Solar time
     float pvtiltang;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
+    float hsr;                          // Azimuth @ Sunrise in degrees
+    time sunrisewoz;                    // time of sunrise in solar time
+    float b;                            // used for calculation solar day
+    float e;                            // equation of time (woz-moz) in minutes
+    time moz;                           // mean local time -> woz-e
+
+    time ct;                            // local clocktime, mez @ local longitude
+    time st;                            // local summer time
+
+    float geoh;                         // geometric horizon height
+    time timediff;
 
 public:
   //Deklaration der Konstruktoren
     Sunpos(float, float);               // (latitude, longitude)
-    Sunpos();                           // default ist Wiltz
+    Sunpos();                           // default is Wiltz, Luxembourg
   //Init
     void init();
   //Deklaration der Elementfunktionen
@@ -56,7 +70,18 @@ public:
     float get_elevang();
     float get_azang();
     float get_pvtiltang();
-
+    float get_hsr();
+    time get_hourangtime();
+    time get_sunrisewoz();
+    float get_b();
+    float get_e();
+    time get_moz();
+    time get_ct();
+    time get_st();
+    void set_geoh(float);
+    float get_geoh();
+    void set_timediff( time& diffnew );
+    time get_timediff();
 
 };
 
