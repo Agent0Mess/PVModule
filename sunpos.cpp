@@ -75,7 +75,7 @@ void Sunpos::set_hourangref( time& harefnew) {
     hourangref=harefnew;
 }
 float Sunpos::get_hourang() {
-    hourang=((hourangref.hour-woz.hour)+(1/60)*(hourangref.min-woz.min))*15
+    hourang=((hourangref.hour-woz.hour)+(1/60)*(hourangref.min-woz.min))*15;
     return hourang;
 }
 float Sunpos::get_elevang() {
