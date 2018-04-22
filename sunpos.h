@@ -44,6 +44,15 @@ private:
     float geoh;                         // geometric horizon height
     time timediff;
 
+    time srwoz;                         // sunrise in WOZ
+    time srmoz;                         // sunrise in MOZ
+    time srmez;                         // sunrise in MEZ
+    time sswoz;                         // sunset in WOZ
+    time ssmoz;                         // sunset in MOZ
+    time ssmez;                         // sunset in MEZ
+    time twelveoclock;                  //
+    time oneoclock;                     //
+
 public:
   //Deklaration der Konstruktoren
     Sunpos(float, float);               // (latitude, longitude)
@@ -83,6 +92,17 @@ public:
     void set_timediff( time& diffnew );
     time get_timediff();
 
+    void set_twelveoclock( time& twelvenew);
+    void set_oneoclock ( time& onenew);
+    time get_twelveoclock();
+    time get_oneoclock ();
+
+    time get_srwoz();
+    time get_srmoz();
+    time get_srmez();
+    time get_sswoz();
+    time get_ssmoz();
+    time get_ssmez();
 };
 
 #endif // SUNPOS_H

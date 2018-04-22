@@ -9,18 +9,34 @@ time time::update_format(){
     div_t hourres;
     div_t minres;
     div_t secres;
+    int neg_sec=0;
+    int neg_min=0;
+    int neg_hour=0;
 
-    secres=div(sec,60);                            // calculate minutes
-    formattedt.sec=sec+secres.rem;
-    formattedt.min=min+secres.quot;
+    secres=div(sec,60);                            // calculate seconds
+    formattedt.sec=secres.rem;
+    if (formattedt.sec < 0) {
+        neg_sec=1;
+        formattedt.sec=60-formattedt.sec;
+    }
 
-    minres=div(formattedt.min,60);                        // calculate hours
+    formattedt.min=min+secres.quot-neg_sec;        // calculate minutes
+    minres=div(formattedt.min,60);
     formattedt.min=minres.rem;
-    formattedt.hour=hour+minres.quot;
+    if (formattedt.min < 0) {
+        neg_min=1;
+        formattedt.min=60-formattedt.min;
+    }
 
-    hourres=div(formattedt.hour,24);                      // calculate days
+    formattedt.hour=hour+minres.quot-neg_min;       // calculate hours
+    hourres=div(formattedt.hour,24);
     formattedt.hour=minres.rem;
-//    formattedt.day=oclock.day+hourres.quot;
+    if (formattedt.hour < 0) {
+        neg_hour=1;
+        formattedt.hour=24-formattedt.hour;
+    }
+//    formattedt.day=oclock.day+hourres.quot-neg_hour;
+
     return formattedt;
 }
 
@@ -50,11 +66,17 @@ void Sunpos::init() {
     haref.hour=12;
     haref.min=0;
     haref.sec=0;
+    time onetime;
+    onetime.hour=1;
+    onetime.min=0;
+    onetime.sec=0;
 
     set_woz(inittime);
     set_mez(inittime);
     set_hourangref(haref);
     set_timediff(inittime);
+    set_twelveoclock(haref);
+    set_oneoclock(onetime);
 
     set_doy(1);
 }
@@ -201,5 +223,82 @@ time Sunpos::get_timediff(){
     return timediff.update_format();
 }
 
+void Sunpos::set_twelveoclock( time& twelvenew) {
+    twelveoclock=twelvenew;
+}
 
+void Sunpos::set_oneoclock( time& onenew) {
+    oneoclock=onenew;
+}
 
+time Sunpos::get_twelveoclock(void) {
+    return twelveoclock;
+}
+
+time Sunpos::get_oneoclock(void) {
+    return oneoclock;
+}
+
+time Sunpos::get_srwoz(){
+    time twelve=get_twelveoclock();
+    time timed=get_timediff();
+    srwoz.hour=twelve.hour-timed.hour;
+    srwoz.min=twelve.min-timed.min;
+    srwoz.sec=twelve.sec-timed.sec;
+    return srwoz.update_format();
+}
+
+time Sunpos::get_srmoz(){
+    time auxmoz=get_srwoz();
+    srmoz.hour=auxmoz.hour;
+    srmoz.min=auxmoz.min-get_e();
+    srmoz.sec=auxmoz.sec;
+    return srmoz.update_format();
+}
+
+time Sunpos::get_srmez(){
+    get_srmoz();
+    int ctsecs=(int) ((srmoz.min-4*(get_longitude()))*60);
+    srmez.hour=srmoz.hour+1;
+    div_t minres;
+    div_t secres;
+    secres=div(ctsecs,60);                            // calculate minutes
+    srmez.sec=srmoz.sec+secres.rem;
+    srmez.min=srmoz.min+secres.quot;
+    minres=div(srmez.min,60);                            // calculate hours
+    srmez.min=minres.rem;
+    srmez.hour=srmez.hour+minres.quot;
+    return srmez.update_format();
+}
+
+time Sunpos::get_sswoz(){
+    time twelve=get_twelveoclock();
+    time timed=get_timediff();
+    srwoz.hour=twelve.hour+timed.hour;
+    srwoz.min=twelve.min+timed.min;
+    srwoz.sec=twelve.sec+timed.sec;
+    return srwoz.update_format();
+}
+
+time Sunpos::get_ssmoz(){
+    time auxmoz=get_sswoz();
+    ssmoz.hour=auxmoz.hour;
+    ssmoz.min=auxmoz.min-get_e();
+    ssmoz.sec=auxmoz.sec;
+    return ssmoz.update_format();
+}
+
+time Sunpos::get_ssmez(){
+    get_ssmoz();
+    int ctsecs=(int) ((ssmoz.min-4*(get_longitude()))*60);
+    ssmez.hour=ssmoz.hour+1;
+    div_t minres;
+    div_t secres;
+    secres=div(ctsecs,60);                            // calculate minutes
+    ssmez.sec=ssmoz.sec+secres.rem;
+    ssmez.min=ssmoz.min+secres.quot;
+    minres=div(ssmez.min,60);                            // calculate hours
+    ssmez.min=minres.rem;
+    ssmez.hour=ssmez.hour+minres.quot;
+    return ssmez.update_format();
+}
