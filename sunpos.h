@@ -4,9 +4,9 @@
 #define PI 3.14159265
 
 struct time {
-    int sec;
-    int min;
-    int hour;
+    long int sec;
+    long int min;
+    long int hour;
 
     time update_format( time& falseform);
 };
@@ -25,7 +25,7 @@ private:
     time hourangtime;                   // Hour Angle Time
     int doy;                            // Day of Year; first January = 1
 
-    const float eclipticang=23.45;      // Eclitic Angle of the Earth
+    const float eclipticang=23.45;      // Ecliptic Angle of the Earth
     float declang;                      // Earth Declination Angle in degrees
     time  hourangref;                   // Referenzzeit für hourang
     float hourang;                      // HA - Hour Angle
