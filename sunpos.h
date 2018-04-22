@@ -8,7 +8,7 @@ struct time {
     int min;
     int hour;
 
-    time update_format();
+    time update_format( time& falseform);
 };
 
 

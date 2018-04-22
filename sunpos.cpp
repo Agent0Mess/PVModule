@@ -4,7 +4,8 @@
 
 
 //time
-time time::update_format(){
+
+time time::update_format( time& falseform){
     time formattedt;
     div_t hourres;
     div_t minres;
@@ -13,33 +14,32 @@ time time::update_format(){
     int neg_min=0;
     int neg_hour=0;
 
-    secres=div(sec,60);                            // calculate seconds
+    secres=div(falseform.sec,60);                            // calculate seconds
     formattedt.sec=secres.rem;
     if (formattedt.sec < 0) {
         neg_sec=1;
-        formattedt.sec=60-formattedt.sec;
+        formattedt.sec=60+formattedt.sec;
     }
 
-    formattedt.min=min+secres.quot-neg_sec;        // calculate minutes
+    formattedt.min=falseform.min+secres.quot-neg_sec;        // calculate minutes
     minres=div(formattedt.min,60);
     formattedt.min=minres.rem;
     if (formattedt.min < 0) {
         neg_min=1;
-        formattedt.min=60-formattedt.min;
+        formattedt.min=60+formattedt.min;
     }
 
-    formattedt.hour=hour+minres.quot-neg_min;       // calculate hours
+    formattedt.hour=falseform.hour+minres.quot-neg_min;       // calculate hours
     hourres=div(formattedt.hour,24);
-    formattedt.hour=minres.rem;
+    formattedt.hour=hourres.rem;
     if (formattedt.hour < 0) {
         neg_hour=1;
-        formattedt.hour=24-formattedt.hour;
+        formattedt.hour=24+formattedt.hour;
     }
 //    formattedt.day=oclock.day+hourres.quot-neg_hour;
 
     return formattedt;
 }
-
 
 //Sunpos
 //Definition der Konstruktoren
@@ -77,6 +77,7 @@ void Sunpos::init() {
     set_timediff(inittime);
     set_twelveoclock(haref);
     set_oneoclock(onetime);
+    set_geoh(-0.01454);
 
     set_doy(1);
 }
@@ -99,13 +100,13 @@ void Sunpos::set_woz( time& woznow) {
     woz=woznow;
 }
 time Sunpos::get_woz() {
-    return woz.update_format();
+    return woz.update_format(woz);
 }
 void Sunpos::set_mez( time& meznow) {
     mez=meznow;
 }
 time Sunpos::get_mez() {
-    return mez.update_format();
+    return mez.update_format(mez);
 }
 void Sunpos::set_doy(int doynow) {
     doy=doynow;
@@ -118,7 +119,7 @@ float Sunpos::get_eclipticang() {
     return eclipticang;
 }
 float Sunpos::get_declang() {
-    declang=get_eclipticang()*sin(365/(2*PI))*get_doy();
+    declang=get_eclipticang()*sin((365/(2*PI))*get_doy());
     return declang;
 }
 void Sunpos::set_hourangref( time& harefnew) {
@@ -153,14 +154,14 @@ time Sunpos::get_hourangtime() {
     hourangtime.hour=(int) floor(anghours);
     hourangtime.min= (int) floor((anghours-hourangtime.hour)*60);
     hourangtime.sec= (int) floor((anghours-hourangtime.min)*60);
-    return hourangtime.update_format();
+    return hourangtime.update_format(hourangtime);
 }
 time Sunpos::get_sunrisewoz(){
     get_hourangtime();                              // update hourangtime
     sunrisewoz.hour=hourangref.hour-hourangtime.hour;
     sunrisewoz.min=hourangref.min-hourangtime.min;
     sunrisewoz.min=hourangref.sec-hourangtime.sec;
-    return sunrisewoz.update_format();
+    return sunrisewoz.update_format(sunrisewoz);
 }
 float Sunpos::get_b(){
     b=(360/364)*(get_doy()-81);
@@ -182,7 +183,7 @@ time Sunpos::get_moz() {
     moz.hour=woz.hour-ehours;
     moz.min=woz.min-emins;
     moz.sec=woz.sec-esecs;
-    return moz.update_format();
+    return moz.update_format(moz);
 }
 time Sunpos::get_ct() {
     get_moz();
@@ -196,12 +197,12 @@ time Sunpos::get_ct() {
     minres=div(ct.min,60);                            // calculate hours
     ct.min=minres.rem;
     ct.hour=ct.hour+minres.quot;
-    return ct.update_format();
+    return ct.update_format(ct);
 }
 time Sunpos::get_st() {
     st=get_ct();
     st.hour=st.hour+1;
-    return st.update_format();
+    return st.update_format(st);
 }
 
 void Sunpos::set_geoh(float newgeoh){
@@ -217,10 +218,10 @@ void Sunpos::set_timediff(time& diffnew){
 }
 
 time Sunpos::get_timediff(){
-    float diffhours=12*acos((sin(geoh)-sin(rad*get_latitude()))/ \
-            (cos(rad*get_latitude()))*cos(rad*get_declang()))/PI;
-    timediff.sec= (int) floor(diffhours*360);
-    return timediff.update_format();
+    float diffhours=12*acos((sin(geoh)-sin(rad*get_latitude())*sin(rad*get_declang()))/ \
+            (cos(rad*get_latitude())*cos(rad*get_declang())))/PI;
+    timediff.min= (int) floor(diffhours*60);
+    return timediff.update_format(timediff);
 }
 
 void Sunpos::set_twelveoclock( time& twelvenew) {
@@ -245,7 +246,7 @@ time Sunpos::get_srwoz(){
     srwoz.hour=twelve.hour-timed.hour;
     srwoz.min=twelve.min-timed.min;
     srwoz.sec=twelve.sec-timed.sec;
-    return srwoz.update_format();
+    return srwoz.update_format(srwoz);
 }
 
 time Sunpos::get_srmoz(){
@@ -253,22 +254,15 @@ time Sunpos::get_srmoz(){
     srmoz.hour=auxmoz.hour;
     srmoz.min=auxmoz.min-get_e();
     srmoz.sec=auxmoz.sec;
-    return srmoz.update_format();
+    return srmoz.update_format(srmoz);
 }
 
 time Sunpos::get_srmez(){
     get_srmoz();
     int ctsecs=(int) ((srmoz.min-4*(get_longitude()))*60);
     srmez.hour=srmoz.hour+1;
-    div_t minres;
-    div_t secres;
-    secres=div(ctsecs,60);                            // calculate minutes
-    srmez.sec=srmoz.sec+secres.rem;
-    srmez.min=srmoz.min+secres.quot;
-    minres=div(srmez.min,60);                            // calculate hours
-    srmez.min=minres.rem;
-    srmez.hour=srmez.hour+minres.quot;
-    return srmez.update_format();
+    srmez.sec=srmoz.sec+ctsecs;
+    return srmez.update_format(srmez);
 }
 
 time Sunpos::get_sswoz(){
@@ -277,7 +271,7 @@ time Sunpos::get_sswoz(){
     srwoz.hour=twelve.hour+timed.hour;
     srwoz.min=twelve.min+timed.min;
     srwoz.sec=twelve.sec+timed.sec;
-    return srwoz.update_format();
+    return srwoz.update_format(srwoz);
 }
 
 time Sunpos::get_ssmoz(){
@@ -285,7 +279,7 @@ time Sunpos::get_ssmoz(){
     ssmoz.hour=auxmoz.hour;
     ssmoz.min=auxmoz.min-get_e();
     ssmoz.sec=auxmoz.sec;
-    return ssmoz.update_format();
+    return ssmoz.update_format(ssmoz);
 }
 
 time Sunpos::get_ssmez(){
@@ -300,5 +294,5 @@ time Sunpos::get_ssmez(){
     minres=div(ssmez.min,60);                            // calculate hours
     ssmez.min=minres.rem;
     ssmez.hour=ssmez.hour+minres.quot;
-    return ssmez.update_format();
+    return ssmez.update_format(ssmez);
 }
