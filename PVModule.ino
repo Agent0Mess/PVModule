@@ -1,67 +1,86 @@
-#include "sunpos.h"
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
+#include "orientation_measure.h"
 
-time woznow;
-Sunpos panel1;
-float tiltangle;
-float earthdecl;
-float aziangle;
-float elevang;
-float hourang;
-time srmez;
-int srmezmin;
-int srmezhour;
-time timediff;
-time ssmez;
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
+imu::Vector<3> orient;
+uint8_t syscal;
+uint8_t gyrocal;
+uint8_t accelcal;
+uint8_t magcal;
+adafruit_bno055_offsets_t sensor_offsets;
+OrientationMeasurement sensor_mes = OrientationMeasurement();
 
-void setup() {
-  Serial.begin(9600);
-  Serial.println("test");
-  woznow.hour=12;
-  woznow.min=0;
-  woznow.sec=0;
-  panel1.set_woz(woznow);
-  panel1.set_doy(101);           // 21/06/2018
-  tiltangle=panel1.get_pvtiltang();
-  earthdecl=panel1.get_declang();
-  aziangle=panel1.get_azang();
-  elevang=panel1.get_elevang();
-  hourang=panel1.get_hourang();
-  srmez=panel1.get_srmez();
-  ssmez=panel1.get_ssmez();
-  srmezmin=srmez.min;
-  srmezhour=srmez.hour;
-  timediff=panel1.get_timediff();
+
+
+void setup(void)
+{
+    Serial.begin(9600);
+    Serial.println("Orientation Sensor Test"); Serial.println("");
+
+    /* Initialise the sensor */
+    if(!bno.begin())
+    {
+        /* There was a problem detecting the BNO055 ... check your connections */
+        Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+    }
+
+    delay(1000);
+
+    bno.setExtCrystalUse(true);
+    bno.setMode(bno.OPERATION_MODE_NDOF);
+    sensor_mes.load_calibration_data();
 }
 
-void loop() {
-  Serial.print("Tilt Angle is:  ");
-  Serial.println(tiltangle);
-  Serial.print("Earth declination angle is:  ");
-  Serial.println(earthdecl);
-  Serial.print("Solar Elevation angle is:  ");
-  Serial.println(elevang);
-  Serial.print("Azimuth angle is:  ");
-  Serial.println(aziangle);
-  Serial.print("Hour angle is:  ");
-  Serial.println(hourang);
-  Serial.print("WOZ is:  ");
-  woznow=woznow.update_format(woznow);
-  Serial.print(woznow.hour);
-  Serial.print(":");
-  Serial.println(woznow.min);  
-  Serial.print("Timediff is:  ");
-  Serial.print(timediff.hour);
-  Serial.print(":");
-  Serial.println(timediff.min);
-  
-  Serial.print("Sunrise MEZ is:  ");
-  Serial.print(srmez.hour);
-  Serial.print(":");
-  Serial.println(srmez.min);    
+void loop(void)
+{
+    /* Get a new sensor event */
+    sensors_event_t event;
+    bno.getEvent(&event);
+    orient=sensor_mes.get_eulerAngles();
 
-  Serial.print("Sunset MEZ is:  ");
-  Serial.print(ssmez.hour);
-  Serial.print(":");
-  Serial.println(ssmez.min);  
+    // Display the floating point data
+    Serial.print("Direct Euler X: ");
+    Serial.print(event.orientation.x, 4);
+    Serial.print("\tQuaternion to Euler X: ");
+    Serial.print(orient.x(), 4);
+    Serial.print("\nDirect Euler Y: ");
+    Serial.print(event.orientation.y, 4);
+    Serial.print("\tQuaternion to Euler Y: ");
+    Serial.print(orient.y(), 4);
+    Serial.print("\nDirect Euler Z: ");
+    Serial.print(event.orientation.z, 4);
+    Serial.print("\tQuaternion to Euler Z: ");
+    Serial.print(orient.z(), 4);
+    Serial.println("");
 
+    delay(100);
+
+    if (bno.isFullyCalibrated()) {
+        Serial.println("Calibration complete");
+    }
+    else {
+        bno.getCalibration(&syscal, &gyrocal, &accelcal, &magcal);
+        Serial.println("Sensor is not fully calibrated");
+        Serial.print("Calibration Status is: ");
+        Serial.print(syscal);
+        Serial.print(gyrocal);
+        Serial.print(accelcal);
+        Serial.println(magcal);
+    }
+    sensor_mes.getSensorOffsets(sensor_offsets);
+    Serial.println(sensor_offsets.accel_offset_x);
+    Serial.println(sensor_offsets.accel_offset_y);
+    Serial.println(sensor_offsets.accel_offset_z);
+    Serial.println(sensor_offsets.mag_offset_x);
+    Serial.println(sensor_offsets.mag_offset_y);
+    Serial.println(sensor_offsets.mag_offset_z);
+    Serial.println(sensor_offsets.gyro_offset_x);
+    Serial.println(sensor_offsets.gyro_offset_y);
+    Serial.println(sensor_offsets.gyro_offset_z);
+    Serial.println(sensor_offsets.accel_radius);
+    Serial.println(sensor_offsets.mag_radius);
 }

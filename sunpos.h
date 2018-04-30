@@ -54,12 +54,12 @@ private:
     time oneoclock;                     //
 
 public:
-  //Deklaration der Konstruktoren
+    //Deklaration der Konstruktoren
     Sunpos(float, float);               // (latitude, longitude)
     Sunpos();                           // default is Wiltz, Luxembourg
-  //Init
+    //Init
     void init();
-  //Deklaration der Elementfunktionen
+    //Deklaration der Elementfunktionen
     void set_latitude(float);
     float get_latitude();
     void set_longitude(float);

@@ -21,7 +21,7 @@ time time::update_format( time& falseform){
         formattedt.sec=60+formattedt.sec;
     }
 
-    formattedt.min=falseform.min+secres.quot-neg_sec;        // calculate minutes
+    formattedt.min=falseform.min+secres.quot-neg_sec;         // calculate minutes
     minres=ldiv(formattedt.min,60);
     formattedt.min=minres.rem;
     if (formattedt.min < 0) {
@@ -36,7 +36,7 @@ time time::update_format( time& falseform){
         neg_hour=1;
         formattedt.hour=24+formattedt.hour;
     }
-//    formattedt.day=oclock.day+hourres.quot-neg_hour;
+    //    formattedt.day=oclock.day+hourres.quot-neg_hour;
 
     return formattedt;
 }
@@ -132,12 +132,12 @@ float Sunpos::get_hourang() {
 }
 float Sunpos::get_elevang() {
     elevang=deg*asin(sin(rad*latitude)*sin(rad*get_declang())\
-            +cos(rad*latitude)*cos(rad*get_declang())*cos(rad*get_hourang()));
+                     +cos(rad*latitude)*cos(rad*get_declang())*cos(rad*get_hourang()));
     return elevang;
 }
 float Sunpos::get_azang() {
     azang=deg*asin(cos(rad*get_declang())*sin(rad*get_hourang()))\
-          /cos(rad*get_elevang());
+            /cos(rad*get_elevang());
     return azang;
 }
 float Sunpos::get_pvtiltang() {
@@ -206,7 +206,7 @@ time Sunpos::get_st() {
 }
 
 void Sunpos::set_geoh(float newgeoh){
-     geoh=newgeoh;
+    geoh=newgeoh;
 }
 
 float Sunpos::get_geoh(){
@@ -219,7 +219,7 @@ void Sunpos::set_timediff(time& diffnew){
 
 time Sunpos::get_timediff(){
     double diffhours=12*acos((sin(geoh)-sin(rad*get_latitude())*sin(rad*get_declang()))/ \
-            (cos(rad*get_latitude())*cos(rad*get_declang())))/PI;
+                             (cos(rad*get_latitude())*cos(rad*get_declang())))/PI;
     timediff.min= long((diffhours*60L));
     return timediff.update_format(timediff);
 }
