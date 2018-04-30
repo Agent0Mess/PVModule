@@ -90,7 +90,7 @@ public:
     void set_geoh(float);
     float get_geoh();
     void set_timediff( time& diffnew );
-    time get_timediff();S
+    time get_timediff();
 
     void set_twelveoclock( time& twelvenew);
     void set_oneoclock ( time& onenew);
