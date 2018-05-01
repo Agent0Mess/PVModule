@@ -1,5 +1,5 @@
 # PVModule
-Important note: This is a work in progress. Even though most of the code compiles properly, important functionalities and features are still missing. Those will be provided during the next weeks.
+<b>Important note:</b> This is a work in progress. Even though most of the code compiles properly, important functionalities and features are still missing. Those will be provided during the next weeks.
 
 PVModule is a project written in C++ which should provide all the functionality to align a Solar Panel with the sun.
 
