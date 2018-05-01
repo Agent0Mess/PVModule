@@ -7,8 +7,11 @@ struct datetime_t {
     long int sec;
     long int min;
     long int hour;
+    int      doy;                             // Day of Year; first January = 1
 
     datetime_t update_format( datetime_t& falseform);
+
+    datetime_t operator+(const datetime_t& time2);
 };
 
 
@@ -23,7 +26,7 @@ private:
     datetime_t woz;                           // True local time, solar time
     datetime_t mez;                           // local time
     datetime_t hourangtime;                   // Hour Angle Time
-    int doy;                            // Day of Year; first January = 1
+
 
     const float eclipticang=23.45;      // Ecliptic Angle of the Earth
     float declang;                      // Earth Declination Angle in degrees

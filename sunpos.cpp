@@ -5,6 +5,15 @@
 
 //time
 
+datetime_t datetime_t::operator+(const datetime_t& time2) {
+    datetime_t result;
+    result.sec=sec+time2.sec;
+    result.min=min+time2.min;
+    result.hour=hour+time2.hour;
+    result.doy=doy;
+    return update_format(result);
+}
+
 datetime_t datetime_t::update_format( datetime_t& falseform){
     datetime_t formattedt;
     ldiv_t hourres;
