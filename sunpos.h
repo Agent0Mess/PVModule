@@ -3,12 +3,12 @@
 
 #define PI 3.14159265
 
-struct time {
+struct datetime_t {
     long int sec;
     long int min;
     long int hour;
 
-    time update_format( time& falseform);
+    datetime_t update_format( datetime_t& falseform);
 };
 
 
@@ -20,38 +20,38 @@ private:
     float latitude;
     float longitude;
 
-    time woz;                           // True local time, solar time
-    time mez;                           // local time
-    time hourangtime;                   // Hour Angle Time
+    datetime_t woz;                           // True local time, solar time
+    datetime_t mez;                           // local time
+    datetime_t hourangtime;                   // Hour Angle Time
     int doy;                            // Day of Year; first January = 1
 
     const float eclipticang=23.45;      // Ecliptic Angle of the Earth
     float declang;                      // Earth Declination Angle in degrees
-    time  hourangref;                   // Referenzzeit für hourang
+    datetime_t  hourangref;                   // Referenzzeit für hourang
     float hourang;                      // HA - Hour Angle
     float elevang;                      // Elevation Angle Beta @ Solar Time
     float azang;                        // Solar Angle Azimut, Angle @ Solar time
     float pvtiltang;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
     float hsr;                          // Azimuth @ Sunrise in degrees
-    time sunrisewoz;                    // time of sunrise in solar time
+    datetime_t sunrisewoz;                    // time of sunrise in solar time
     float b;                            // used for calculation solar day
     float e;                            // equation of time (woz-moz) in minutes
-    time moz;                           // mean local time -> woz-e
+    datetime_t moz;                           // mean local time -> woz-e
 
-    time ct;                            // local clocktime, mez @ local longitude
-    time st;                            // local summer time
+    datetime_t ct;                            // local clocktime, mez @ local longitude
+    datetime_t st;                            // local summer time
 
     float geoh;                         // geometric horizon height
-    time timediff;
+    datetime_t timediff;
 
-    time srwoz;                         // sunrise in WOZ
-    time srmoz;                         // sunrise in MOZ
-    time srmez;                         // sunrise in MEZ
-    time sswoz;                         // sunset in WOZ
-    time ssmoz;                         // sunset in MOZ
-    time ssmez;                         // sunset in MEZ
-    time twelveoclock;                  //
-    time oneoclock;                     //
+    datetime_t srwoz;                         // sunrise in WOZ
+    datetime_t srmoz;                         // sunrise in MOZ
+    datetime_t srmez;                         // sunrise in MEZ
+    datetime_t sswoz;                         // sunset in WOZ
+    datetime_t ssmoz;                         // sunset in MOZ
+    datetime_t ssmez;                         // sunset in MEZ
+    datetime_t twelveoclock;                  //
+    datetime_t oneoclock;                     //
 
 public:
     //Deklaration der Konstruktoren
@@ -65,44 +65,44 @@ public:
     void set_longitude(float);
     float get_longitude();
 
-    void set_woz( time& woznow);
-    time get_woz();
-    void set_mez( time& meznow);
-    time get_mez();
+    void set_woz( datetime_t& woznow);
+    datetime_t get_woz();
+    void set_mez( datetime_t& meznow);
+    datetime_t get_mez();
     void set_doy(int);
     int get_doy();
 
     float get_eclipticang();
     float get_declang();
-    void set_hourangref ( time& harefnew);
+    void set_hourangref ( datetime_t& harefnew);
     float get_hourang();
     float get_elevang();
     float get_azang();
     float get_pvtiltang();
     float get_hsr();
-    time get_hourangtime();
-    time get_sunrisewoz();
+    datetime_t get_hourangtime();
+    datetime_t get_sunrisewoz();
     float get_b();
     float get_e();
-    time get_moz();
-    time get_ct();
-    time get_st();
+    datetime_t get_moz();
+    datetime_t get_ct();
+    datetime_t get_st();
     void set_geoh(float);
     float get_geoh();
-    void set_timediff( time& diffnew );
-    time get_timediff();
+    void set_timediff( datetime_t& diffnew );
+    datetime_t get_timediff();
 
-    void set_twelveoclock( time& twelvenew);
-    void set_oneoclock ( time& onenew);
-    time get_twelveoclock();
-    time get_oneoclock ();
+    void set_twelveoclock( datetime_t& twelvenew);
+    void set_oneoclock ( datetime_t& onenew);
+    datetime_t get_twelveoclock();
+    datetime_t get_oneoclock ();
 
-    time get_srwoz();
-    time get_srmoz();
-    time get_srmez();
-    time get_sswoz();
-    time get_ssmoz();
-    time get_ssmez();
+    datetime_t get_srwoz();
+    datetime_t get_srmoz();
+    datetime_t get_srmez();
+    datetime_t get_sswoz();
+    datetime_t get_ssmoz();
+    datetime_t get_ssmez();
 };
 
 #endif // SUNPOS_H
