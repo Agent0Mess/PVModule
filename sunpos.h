@@ -14,44 +14,44 @@ struct time {
 
 class Sunpos {
 private:
-    const float deg=180/PI;
-    const float rad=PI/180;
+    const float deg_=180/PI;
+    const float rad_=PI/180;
 
-    float latitude;
-    float longitude;
+    float latitude_;
+    float longitude_;
 
-    time woz;                           // True local time, solar time
-    time mez;                           // local time
-    time hourangtime;                   // Hour Angle Time
-    int doy;                            // Day of Year; first January = 1
+    time woz_;                           // True local time, solar time
+    time mez_;                           // local time
+    time hourangtime_;                   // Hour Angle Time
+    int doy_;                            // Day of Year; first January = 1
 
-    const float eclipticang=23.45;      // Ecliptic Angle of the Earth
-    float declang;                      // Earth Declination Angle in degrees
-    time  hourangref;                   // Referenzzeit für hourang
-    float hourang;                      // HA - Hour Angle
-    float elevang;                      // Elevation Angle Beta @ Solar Time
-    float azang;                        // Solar Angle Azimut, Angle @ Solar time
-    float pvtiltang;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
-    float hsr;                          // Azimuth @ Sunrise in degrees
-    time sunrisewoz;                    // time of sunrise in solar time
-    float b;                            // used for calculation solar day
-    float e;                            // equation of time (woz-moz) in minutes
-    time moz;                           // mean local time -> woz-e
+    const float eclipticang_=23.45;      // Ecliptic Angle of the Earth
+    float declang_;                      // Earth Declination Angle in degrees
+    time  hourangref_;                   // Referenzzeit für hourang
+    float hourang_;                      // HA - Hour Angle
+    float elevang_;                      // Elevation Angle Beta @ Solar Time
+    float azang_;                        // Solar Angle Azimut, Angle @ Solar time
+    float pvtiltang_;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
+    float hsr_;                          // Azimuth @ Sunrise in degrees
+    time sunrisewoz_;                    // time of sunrise in solar time
+    float b_;                            // used for calculation solar day
+    float e_;                            // equation of time (woz-moz) in minutes
+    time moz_;                           // mean local time -> woz-e
 
-    time ct;                            // local clocktime, mez @ local longitude
-    time st;                            // local summer time
+    time ct_;                            // local clocktime, mez @ local longitude
+    time st_;                            // local summer time
 
-    float geoh;                         // geometric horizon height
-    time timediff;
+    float geoh_;                         // geometric horizon height
+    time timediff_;
 
-    time srwoz;                         // sunrise in WOZ
-    time srmoz;                         // sunrise in MOZ
-    time srmez;                         // sunrise in MEZ
-    time sswoz;                         // sunset in WOZ
-    time ssmoz;                         // sunset in MOZ
-    time ssmez;                         // sunset in MEZ
-    time twelveoclock;                  //
-    time oneoclock;                     //
+    time srwoz_;                         // sunrise in WOZ
+    time srmoz_;                         // sunrise in MOZ
+    time srmez_;                         // sunrise in MEZ
+    time sswoz_;                         // sunset in WOZ
+    time ssmoz_;                         // sunset in MOZ
+    time ssmez_;                         // sunset in MEZ
+    time twelveoclock_;                  //
+    time oneoclock_;                     //
 
 public:
     //Deklaration der Konstruktoren
