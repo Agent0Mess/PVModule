@@ -23,38 +23,38 @@ private:
     float latitude;
     float longitude;
 
-    datetime_t woz;                           // True local time, solar time
-    datetime_t mez;                           // local time
-    datetime_t hourangtime;                   // Hour Angle Time
+    datetime_t woz_;                           // True local time, solar time
+    datetime_t mez_;                           // local time
+    datetime_t hourangtime_;                   // Hour Angle Time
 
 
-    const float eclipticang=23.45;      // Ecliptic Angle of the Earth
-    float declang;                      // Earth Declination Angle in degrees
-    datetime_t  hourangref;                   // Referenzzeit für hourang
-    float hourang;                      // HA - Hour Angle
-    float elevang;                      // Elevation Angle Beta @ Solar Time
-    float azang;                        // Solar Angle Azimut, Angle @ Solar time
-    float pvtiltang;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
-    float hsr;                          // Azimuth @ Sunrise in degrees
-    datetime_t sunrisewoz;                    // time of sunrise in solar time
-    float b;                            // used for calculation solar day
-    float e;                            // equation of time (woz-moz) in minutes
-    datetime_t moz;                           // mean local time -> woz-e
+    const float eclipticang_=23.45;      // Ecliptic Angle of the Earth
+    float declang_;                      // Earth Declination Angle in degrees
+    datetime_t  hourangref_;                   // Referenzzeit für hourang
+    float hourang_;                      // HA - Hour Angle
+    float elevang_;                      // Elevation Angle Beta @ Solar Time
+    float azang_;                        // Solar Angle Azimut, Angle @ Solar time
+    float pvtiltang_;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
+    float hsr_;                          // Azimuth @ Sunrise in degrees
+    datetime_t sunrisewoz_;                    // time of sunrise in solar time
+    float b_;                            // used for calculation solar day
+    float e_;                            // equation of time (woz-moz) in minutes
+    datetime_t moz_;                           // mean local time -> woz-e
 
-    datetime_t ct;                            // local clocktime, mez @ local longitude
-    datetime_t st;                            // local summer time
+    datetime_t ct_;                            // local clocktime, mez @ local longitude
+    datetime_t st_;                            // local summer time
 
-    float geoh;                         // geometric horizon height
-    datetime_t timediff;
+    float geoh_;                         // geometric horizon height
+    datetime_t timediff_;
 
-    datetime_t srwoz;                         // sunrise in WOZ
-    datetime_t srmoz;                         // sunrise in MOZ
-    datetime_t srmez;                         // sunrise in MEZ
-    datetime_t sswoz;                         // sunset in WOZ
-    datetime_t ssmoz;                         // sunset in MOZ
-    datetime_t ssmez;                         // sunset in MEZ
-    datetime_t twelveoclock;                  //
-    datetime_t oneoclock;                     //
+    datetime_t srwoz_;                         // sunrise in WOZ
+    datetime_t srmoz_;                         // sunrise in MOZ
+    datetime_t srmez_;                         // sunrise in MEZ
+    datetime_t sswoz_;                         // sunset in WOZ
+    datetime_t ssmoz_;                         // sunset in MOZ
+    datetime_t ssmez_;                         // sunset in MEZ
+    datetime_t twelveoclock_;                  //
+    datetime_t oneoclock_;                     //
 
 public:
     //Deklaration der Konstruktoren

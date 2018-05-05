@@ -14,19 +14,19 @@ imu::Vector<3> OrientationMeasurement::get_eulerAngles() const{
 }
 
 void OrientationMeasurement::load_calibration_data() {
-    saved_offsets.accel_offset_x =-13;
-    saved_offsets.accel_offset_y =-29;
-    saved_offsets.accel_offset_z =-31;
-    saved_offsets.gyro_offset_x  = 49;
-    saved_offsets.gyro_offset_y  =732;
-    saved_offsets.gyro_offset_z  =-491;
-    saved_offsets.mag_offset_x   =-8;
-    saved_offsets.mag_offset_y   =-1;
-    saved_offsets.mag_offset_z   =36;
-    saved_offsets.accel_radius   =1000;
-    saved_offsets.mag_radius     =799;
+    saved_offsets_.accel_offset_x =-13;
+    saved_offsets_.accel_offset_y =-29;
+    saved_offsets_.accel_offset_z =-31;
+    saved_offsets_.gyro_offset_x  = 49;
+    saved_offsets_.gyro_offset_y  =732;
+    saved_offsets_.gyro_offset_z  =-491;
+    saved_offsets_.mag_offset_x   =-8;
+    saved_offsets_.mag_offset_y   =-1;
+    saved_offsets_.mag_offset_z   =36;
+    saved_offsets_.accel_radius   =1000;
+    saved_offsets_.mag_radius     =799;
 
     setMode(OPERATION_MODE_CONFIG);
-    setSensorOffsets(saved_offsets);
+    setSensorOffsets(saved_offsets_);
     setMode(OPERATION_MODE_NDOF);
 }
