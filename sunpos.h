@@ -1,30 +1,21 @@
 #ifndef SUNPOS_H
 #define SUNPOS_H
 
+#include "rtcadapter.h"
+
 #define PI 3.14159265
-
-struct datetime_t {
-    long int sec;
-    long int min;
-    long int hour;
-    int      doy;                             // Day of Year; first January = 1
-
-    datetime_t update_format( datetime_t& falseform);
-
-    datetime_t operator+(const datetime_t& time2);
-};
 
 
 class Sunpos {
 private:
-    const float deg=180/PI;
-    const float rad=PI/180;
+    const float deg_=180/PI;
+    const float rad_=PI/180;
 
-    float latitude;
-    float longitude;
+    float latitude_;
+    float longitude_;
 
     datetime_t woz_;                           // True local time, solar time
-    datetime_t mez_;                           // local time
+    datetime_t mez_;                           /**< local time - time displayed on your clock */
     datetime_t hourangtime_;                   // Hour Angle Time
 
 
@@ -33,8 +24,8 @@ private:
     datetime_t  hourangref_;                   // Referenzzeit für hourang
     float hourang_;                      // HA - Hour Angle
     float elevang_;                      // Elevation Angle Beta @ Solar Time
-    float azang_;                        // Solar Angle Azimut, Angle @ Solar time
-    float pvtiltang_;                    // PV Panel tilt Angle, lokal, horizontal gegenüber Boden
+    float azang_;                        /**< Solar Angle Azimut, Angle @ Solar time */
+    float pvtiltang_;                    /**< PV Panel tilt Angle, local, horizontal over floor*/
     float hsr_;                          // Azimuth @ Sunrise in degrees
     datetime_t sunrisewoz_;                    // time of sunrise in solar time
     float b_;                            // used for calculation solar day
