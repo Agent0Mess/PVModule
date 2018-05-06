@@ -3,7 +3,8 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 #include "orientation_measure.h"
-
+#include "rtcadapter.h"
+/**
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 imu::Vector<3> orient;
 uint8_t syscal;
@@ -12,18 +13,26 @@ uint8_t accelcal;
 uint8_t magcal;
 adafruit_bno055_offsets_t sensor_offsets;
 OrientationMeasurement sensor_mes = OrientationMeasurement();
+*/
 
-
+RtcAdapter MyRTC;
+datetime_t current_time;
 
 void setup(void)
 {
     Serial.begin(9600);
-    Serial.println("Orientation Sensor Test"); Serial.println("");
 
-    /* Initialise the sensor */
+    if (! MyRTC.begin()) {
+      Serial.println("Couldn't find RTC");
+      while (1);
+    }
+
+/**    Serial.println("Orientation Sensor Test"); Serial.println("");
+
+    /* Initialise the sensor
     if(!bno.begin())
     {
-        /* There was a problem detecting the BNO055 ... check your connections */
+        /* There was a problem detecting the BNO055 ... check your connections
         Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
         while(1);
     }
@@ -33,11 +42,21 @@ void setup(void)
     bno.setExtCrystalUse(true);
     bno.setMode(bno.OPERATION_MODE_NDOF);
     sensor_mes.load_calibration_data();
+    */
 }
 
 void loop(void)
 {
-    /* Get a new sensor event */
+    current_time=MyRTC.read_time();
+    Serial.print("Hour: ");
+    Serial.println(current_time.hour);
+    Serial.print("Minute: ");
+    Serial.println(current_time.min);
+    Serial.print("Day of Year: ");
+    Serial.println(current_time.doy);
+
+/**
+    // Get a new sensor event
     sensors_event_t event;
     bno.getEvent(&event);
     orient=sensor_mes.get_eulerAngles();
@@ -83,4 +102,6 @@ void loop(void)
     Serial.println(sensor_offsets.gyro_offset_z);
     Serial.println(sensor_offsets.accel_radius);
     Serial.println(sensor_offsets.mag_radius);
+*/
+
 }
