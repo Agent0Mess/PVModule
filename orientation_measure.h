@@ -1,3 +1,5 @@
+#ifndef ORIENTATIONMEASURE_H
+#define ORIENTATIONMEASURE_H
 
 #include <Adafruit_BNO055.h>
 #include <utility/quaternion.h>
@@ -39,3 +41,5 @@ public:
     void load_calibration_data ();
 
 };
+
+#endif
