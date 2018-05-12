@@ -4,6 +4,7 @@
 #include <utility/imumaths.h>
 #include "orientation_measure.h"
 #include "rtcadapter.h"
+#include "motordriver.h"
 /**
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 imu::Vector<3> orient;

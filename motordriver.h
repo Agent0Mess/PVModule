@@ -1,3 +1,19 @@
+/**
+  *@file Provides the functionality to drive motors with the Arduino Board
+  *
+  * The code is Arduino specific.
+  * It is assumed that some kind of motor shield is used, as well as relays
+  * to drive the respective motors.
+  *
+  * On the hardware side, tilt is realized with a linear actuator,
+  * controlled with a motor shield.
+  * Turn (or Azimuth) is realized with a antenna motor,
+  * controlled with mainly two relays.
+  *
+  * The functions can be adapted to different motor hardware setup
+  * by simply changing the functions in the file motordriver.cpp
+*/
+
 #ifndef MOTORDRIVER_H
 #define MOTORDRIVER_H
 
