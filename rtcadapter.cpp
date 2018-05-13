@@ -20,7 +20,7 @@ datetime_t datetime_t::operator-(const datetime_t& time2) {
     return update_format(result);
 }
 
-datetime_t datetime_t::operator < (const datetime_t& time2){
+bool datetime_t::operator < (const datetime_t& time2){
     if ((this->hour - time2.hour) < 0) {return true;}
     else if ((this->hour - time2.hour > 0)) {return false;}
     else if ((this->min - time2.min) < 0) {return true;}
@@ -30,7 +30,7 @@ datetime_t datetime_t::operator < (const datetime_t& time2){
 
 }
 
-datetime_t datetime_t::operator > (const datetime_t& time2){
+bool datetime_t::operator > (const datetime_t& time2){
     if ((this->hour - time2.hour) > 0) {return true;}
     else if ((this->hour - time2.hour < 0)) {return false;}
     else if ((this->min - time2.min) > 0) {return true;}

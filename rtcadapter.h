@@ -27,8 +27,8 @@ struct datetime_t {
     datetime_t operator + (const datetime_t& time2);
     datetime_t operator - (const datetime_t& time2);
 
-    datetime_t operator < (const datetime_t& time2);
-    datetime_t operator > (const datetime_t& time2);
+    bool operator < (const datetime_t& time2);
+    bool operator > (const datetime_t& time2);
 };
 
 
