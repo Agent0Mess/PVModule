@@ -12,6 +12,7 @@
 
 #define DEBUG
 #define LCD
+#define RESET_CALIBRATION
 
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
@@ -28,54 +29,53 @@ const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 #endif
 
-
-int eeAddress = 0;
+int eeAddress = 0; /**< Address for calibration data in EEPROM*/
 
 void setup(void)
 {
     Serial.begin(9600);
 
+    #ifdef LCD
     lcd.begin(16, 2);
+    #endif
 
     if (! MyRTC.begin()) {
       Serial.println("Couldn't find RTC");
       while (1);
     }
 
-  Serial.println("Orientation Sensor Test"); Serial.println("");
+    Serial.println("Orientation Sensor Test"); Serial.println("");
 
     /* Initialise the sensor */
-    if(!bno.begin())
-    {
+    if(!bno.begin()){
         /* There was a problem detecting the BNO055 ... check your connections */
         Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
         while(1);
     }
-    delay(2000);
-    displayCalStatus();
+
+    delay(500);
+
+    #ifdef RESET_CALIBRATION
     sensor_offsets = sensor_mes.load_calibration_data();
-
     EEPROM.put(eeAddress, sensor_offsets);
-
-    delay(2000);
+    delay(500);
+    #endif
 
     EEPROM.get(eeAddress, sensor_offsets_load);
 
     sensor_mes.setMode(sensor_mes.OPERATION_MODE_CONFIG);
-    delay(200);
+    delay(500);
     sensor_mes.setExtCrystalUse(true);
     Serial.println("Loading Calibartion Data");
     sensor_mes.setSensorOffsets(sensor_offsets_load);
-    delay(1000);
-    displayCalStatus();
+    delay(500);
     sensor_mes.setMode(sensor_mes.OPERATION_MODE_NDOF_FMC_OFF);
 }
 
 void loop(void)
 {
-    orient=sensor_mes.get_eulerAngles();
-
     #ifdef DEBUG
+    orient=sensor_mes.get_eulerAngles();
     Serial.print("\t Euler X: ");
     Serial.print(orient.x(), 4);
     Serial.print("\t Euler Y: ");
@@ -83,16 +83,6 @@ void loop(void)
     Serial.print("\t Euler Z: ");
     Serial.print(orient.z(), 4);
     Serial.println("");
-    #endif
-
-    PanelControl.orient_panel();
-
-
-    sensor_mes.getSensorOffsets(current_calib);
-
-    #ifdef DEBUG
-    displaySensorOffsets(current_calib);
-    displayCalStatus();
     #endif
 
     #ifdef LCD
@@ -104,6 +94,14 @@ void loop(void)
     lcd.print("Comp");
     lcd.setCursor(11, 1);
     lcd.print(orient.x());
+    #endif
+
+    PanelControl.orient_panel();
+    sensor_mes.getSensorOffsets(current_calib);
+
+    #ifdef DEBUG
+    displaySensorOffsets(current_calib);
+    displayCalStatus();
     #endif
 
     updateCalibration();
@@ -179,13 +177,16 @@ void displaySensorOffsets(const adafruit_bno055_offsets_t &calibData)
 /**************************************************************************/
 
 void updateCalibration (void) {
+    /** Turn off panel for savety. It should not be moving when
+            loading a new calibration */
     PanelControl.stop_panel();
 
+    /** Perform a basic check if calibration data has changed */
     if ((sensor_offsets_load.accel_offset_x != current_calib.accel_offset_x) || \
             (sensor_offsets_load.mag_offset_x != current_calib.mag_offset_x) || \
             (sensor_offsets_load.gyro_offset_x != current_calib.gyro_offset_x) && \
-            (sensor_offsets_load.mag_offset_x>0))
-    {
+            (sensor_offsets_load.mag_offset_x>0)){
+        /** New calibration data is filtered through a simple IIR filter */
         sensor_offsets= (sensor_offsets_load*19 + current_calib)/20;
         EEPROM.put(eeAddress, sensor_offsets);
         delay(300);
