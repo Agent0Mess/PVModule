@@ -32,7 +32,7 @@ void Sunpos::init() {
     onetime.min=0L;
     onetime.sec=0L;
 
-    set_woz(inittime);
+    update_woz();
     set_mez(inittime);
     set_hourangref(haref);
     set_timediff(inittime);
@@ -57,11 +57,18 @@ float Sunpos::get_longitude() {
     return longitude_;
 }
 
-void Sunpos::set_woz( datetime_t& woznow) {
-    woz_=woznow;
+void Sunpos::update_woz() {
+    datetime_t woz_temp;
+    woz_temp=mez_;
+    woz_temp.min=woz_temp.min+get_e()+4*longitude_;
+    woz_temp=woz_temp.update_format(woz_temp);
+    woz_temp=woz_temp-oneoclock_;
+    woz_=woz_temp.update_format(woz_temp);
 }
+
 datetime_t Sunpos::get_woz() {
-    return woz_.update_format(woz_);
+    update_woz();
+    return woz_;
 }
 void Sunpos::set_mez( datetime_t& meznow) {
     mez_=meznow;
@@ -80,7 +87,7 @@ float Sunpos::get_eclipticang() {
     return eclipticang_;
 }
 float Sunpos::get_declang() {
-    declang_=get_eclipticang()*sin(((2*PI)/365)*(get_doy()-81));
+    declang_=get_eclipticang()*sin(((2*PI)/365.0)*(get_doy()-81.0));
     return declang_;
 }
 void Sunpos::set_hourangref( datetime_t& harefnew) {
@@ -88,7 +95,7 @@ void Sunpos::set_hourangref( datetime_t& harefnew) {
 }
 float Sunpos::get_hourang() {
     get_woz();                                         // update woz
-    hourang_=((hourangref_.hour-woz_.hour)+(1/60)*(hourangref_.min-woz_.min))*15;
+    hourang_=((hourangref_.hour-get_woz().hour)+(1.0/60.0)*(hourangref_.min-get_woz().min)+(1.0/360.0)*(hourangref_.sec-get_woz().sec))*15;
     return hourang_;
 }
 float Sunpos::get_elevang() {
@@ -102,7 +109,7 @@ float Sunpos::get_azang() {
     return azang_;
 }
 float Sunpos::get_pvtiltang() {
-    pvtiltang_=90-get_elevang();
+    pvtiltang_=90.0-get_elevang();
     return pvtiltang_;
 }
 float Sunpos::get_hsr() {
@@ -123,7 +130,7 @@ datetime_t Sunpos::get_sunrisewoz(){
     return sunrisewoz_;
 }
 float Sunpos::get_b(){
-    b_=(360/364)*(get_doy()-81);
+    b_=(360.0/364.0)*(get_doy()-81);
     return b_;
 }
 float Sunpos::get_e() {
@@ -234,3 +241,5 @@ datetime_t Sunpos::get_ssmez(){
     ssmez_.sec=ssmoz_.sec+ctsecs;
     return ssmez_.update_format(ssmez_);
 }
+
+

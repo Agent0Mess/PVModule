@@ -5,6 +5,13 @@
 
 #define PI 3.14159265
 
+/**
+ * @brief The Sunpos class provides all the functionalities needed to calculate the sun's
+ * position at a given place on earth.
+ *
+ * A lot of the getter methods call other methods recursively. In order to get the
+ * desired results, call set_mez() first, with the time currently displayed on your clock.
+ */
 
 class Sunpos {
 private:
@@ -25,7 +32,7 @@ private:
     float hourang_;                      // HA - Hour Angle
     float elevang_;                      // Elevation Angle Beta @ Solar Time
     float azang_;                        /**< Solar Angle Azimut, Angle @ Solar time */
-    float pvtiltang_;                    /**< PV Panel tilt Angle, local, horizontal over floor*/
+    float pvtiltang_;                    /**< PV Panel tilt Angle, local, horizontal over floor = 0 degrees*/
     float hsr_;                          // Azimuth @ Sunrise in degrees
     datetime_t sunrisewoz_;                    // time of sunrise in solar time
     float b_;                            // used for calculation solar day
@@ -59,7 +66,7 @@ public:
     void set_longitude(float);
     float get_longitude();
 
-    void set_woz( datetime_t& woznow);
+    void update_woz();
     datetime_t get_woz();
     void set_mez( datetime_t& meznow);
     datetime_t get_mez();
@@ -97,6 +104,7 @@ public:
     datetime_t get_sswoz();
     datetime_t get_ssmoz();
     datetime_t get_ssmez();
+
 };
 
 #endif // SUNPOS_H

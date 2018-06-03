@@ -24,34 +24,42 @@ void MotorDriver::setup_pins()
     pinMode(direct_A_, OUTPUT);
 }
 
-void MotorDriver::run_tilt_panel_horizontal()
+bool MotorDriver::run_tilt_panel_horizontal()
 {
-    if (direct_==0) {
-        digitalWrite(direct_A_, HIGH);
-        digitalWrite(brake_A_, LOW);
-        analogWrite(speed_A_, 255);
-        direct_ = 1;                //direction is forward
+    if (millicounter_tilt_+1000<=millis())
+    {
+        if (direct_==0) {
+            digitalWrite(direct_A_, HIGH);
+            digitalWrite(brake_A_, LOW);
+            analogWrite(speed_A_, 255);
+            direct_ = 1;                //direction is forward
+            return true;
 
-    }
-    else {
-        stop_tilt_panel();
-
+        }
+        else {
+            stop_tilt_panel();
+            return false;
+        }
     }
 }
 
 
-void MotorDriver::run_tilt_panel_vertical()
+bool MotorDriver::run_tilt_panel_vertical()
 {
-    if (direct_==0) {
-        digitalWrite(direct_A_, LOW);
-        digitalWrite(brake_A_, LOW);
-        analogWrite(speed_A_, 255);
-        direct_ = 2;                //direction is backward
-
-    }
-    else {
-        stop_tilt_panel();
-
+    if (millicounter_tilt_+1000<=millis())
+    {
+        if (direct_==0)
+        {
+            digitalWrite(direct_A_, LOW);
+            digitalWrite(brake_A_, LOW);
+            analogWrite(speed_A_, 255);
+            direct_ = 2;                //direction is backward
+            return true;
+        }
+        else {
+            stop_tilt_panel();
+            return false;
+        }
     }
 }
 
@@ -59,26 +67,37 @@ void MotorDriver::stop_tilt_panel()
 {
     digitalWrite(speed_A_, 0);      // Channel A, speed = zero
     analogWrite(brake_A_, HIGH);    // Channel A, engage brake
+    millicounter_tilt_=millis();
 }
 
-void MotorDriver::run_turn_panel_cw()
+bool MotorDriver::run_turn_panel_cw()
 {
-    if (rel_==0) {
-        digitalWrite(rel_1_, HIGH);
-        rel_ = 1;
+    if (millicounter_azi_+1000<=millis())
+    {
+        if (rel_==0) {
+            digitalWrite(rel_1_, HIGH);
+            rel_ = 1;
+            return true;
+        }
+        else
+            stop_turn_panel();
+            return false;
     }
-    else
-        stop_turn_panel();
 }
 
-void MotorDriver::run_turn_panel_ccw()
+bool MotorDriver::run_turn_panel_ccw()
 {
-    if (rel_==0) {
-        digitalWrite(rel_2_, HIGH);
-        rel_ = 2;
+    if (millicounter_azi_+1000<=millis())
+    {
+        if (rel_==0) {
+            digitalWrite(rel_2_, HIGH);
+            rel_ = 2;
+            return true;
+        }
+        else
+            stop_turn_panel();
+            return false;
     }
-    else
-        stop_turn_panel();
 }
 
 void MotorDriver::stop_turn_panel()
@@ -86,4 +105,5 @@ void MotorDriver::stop_turn_panel()
     digitalWrite(rel_1_, LOW);
     digitalWrite(rel_2_, LOW);
     rel_ = 0;
+    millicounter_azi_=millis();
 }

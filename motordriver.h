@@ -30,6 +30,8 @@ private:
 
     int rel_;           /**< Contains current relay status */
     int direct_;        /**< Contains current linear actor status */
+    unsigned long millicounter_tilt_; /**< Counter variable for milliseconds */
+    unsigned long millicounter_azi_; /**< Counter variable for milliseconds */
 
 public:
     /**
@@ -60,7 +62,7 @@ public:
      * something must have gone wrong.
      * The panel will then simply stop tilting for safety reasons.
      */
-    void run_tilt_panel_horizontal();
+    bool run_tilt_panel_horizontal();
 
     /**
      * @brief Retracts linear actuator, so that the panel tilts. Tilt angle increases.
@@ -70,7 +72,7 @@ public:
      * something must have gone wrong.
      * The panel will then simply stop tilting for safety reasons.S
      */
-    void run_tilt_panel_vertical();
+    bool run_tilt_panel_vertical();
 
     /**
      * @brief Stops panel's tilt movement
@@ -85,7 +87,7 @@ public:
      * something must have gone wrong.
      * The panel will then simply stop turning for safety reasons.
      */
-    void run_turn_panel_cw();
+    bool run_turn_panel_cw();
 
     /**
      * @brief Turns panel counter-clockwise (i.e. from west to east).
@@ -96,7 +98,7 @@ public:
      * something must have gone wrong.
      * The panel will then simply stop turning for safety reasons.
      */
-    void run_turn_panel_ccw();
+    bool run_turn_panel_ccw();
 
     /**
      * @brief Stop panel's turn movement

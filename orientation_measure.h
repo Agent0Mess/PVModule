@@ -4,6 +4,17 @@
 #include <Adafruit_BNO055.h>
 #include <utility/quaternion.h>
 #include <utility/vector.h>
+#include <math.h>
+
+
+struct offset_data_t : public adafruit_bno055_offsets_t
+{
+
+    offset_data_t operator + (const offset_data_t offset2);
+    offset_data_t operator * (const int multiplicator);
+    offset_data_t operator / (const double divisor);
+    void operator = (adafruit_bno055_offsets_t bno_offsets);
+};
 
 class OrientationMeasurement : public Adafruit_BNO055, public imu::Quaternion
 {
@@ -38,7 +49,7 @@ public:
      * If you want to use a different sensor, calibration should be
      * adapted in the function.
      */
-    void load_calibration_data ();
+    adafruit_bno055_offsets_t load_calibration_data ();
 
 };
 
