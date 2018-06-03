@@ -10,9 +10,9 @@
 #include <EEPROM.h>
 #include <LiquidCrystal.h>
 
-#define DEBUG
-#define LCD
-#define RESET_CALIBRATION
+#define DEBUG   /**< Comment out to disable debug messages */
+#define LCD     /**< Comment out no additional LCD is used */
+#define RESET_CALIBRATION   /**< Comment out, if good calibration data is already in EEPROM */
 
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
