@@ -28,6 +28,8 @@ private:
 
     float tolerance_band_tilt_;
     float tolerance_band_azimuth_;
+    float adjust_precision_azimuth_;
+    float adjust_precision_tilt_;
 
     bool sun_is_up_;
 
@@ -37,6 +39,13 @@ private:
 
 
 public:
+    /**
+     * @brief Default constructor sets tolerance band and
+     * adjust precision to predefined values.
+     *
+     * Tolerance band should always be greater or equal to the
+     * corresponding adjust precision.
+     */
     OrientationController();
 
 
@@ -66,6 +75,12 @@ public:
 
     void set_tolerance_band_azimuth(float azi_tol);
     float get_tolerance_band_azimuth() const;
+
+    void set_adjust_precision_tilt(float tilt_tol);
+    float get_adjust_precision_tilt() const;
+
+    void set_adjust_precision_azimuth(float azi_tol);
+    float get_adjust_precision_azimuth() const;
 
     void orient_panel();
     void stop_panel();

@@ -9,7 +9,9 @@ datetime_t OrientationController::getMez_now() const
 OrientationController::OrientationController()
 {
     set_tolerance_band_azimuth(6.0);
-    set_tolerance_band_tilt(2.0);
+    set_adjust_precision_azimuth(4.0);
+    set_tolerance_band_tilt(6.0);
+    set_adjust_precision_tilt(2.0);
 }
 
 bool OrientationController::is_daytime()
@@ -85,6 +87,26 @@ float OrientationController::get_tolerance_band_azimuth() const
     return tolerance_band_azimuth_;
 }
 
+
+void OrientationController::set_adjust_precision_tilt(float tilt_adj)
+{
+    adjust_precision_tilt_=tilt_adj;
+}
+float OrientationController::get_adjust_precision_tilt() const
+{
+    return adjust_precision_tilt_;
+}
+
+void OrientationController::set_adjust_precision_azimuth(float azi_adj)
+{
+    adjust_precision_azimuth_=azi_adj;
+}
+float OrientationController::get_adjust_precision_azimuth() const
+{
+    return adjust_precision_azimuth_;
+}
+
+
 void OrientationController::orient_panel(){
 
 
@@ -99,7 +121,7 @@ void OrientationController::orient_panel(){
             is_tilt_running_=panel_driver.run_tilt_panel_horizontal();
         }
     }
-    else if (abs(deviation_tilt())<=tolerance_band_tilt_)
+    else if (abs(deviation_tilt())<=adjust_precision_tilt_)
     {
         panel_driver.stop_tilt_panel();
         is_tilt_running_=false;
@@ -116,7 +138,7 @@ void OrientationController::orient_panel(){
             is_azi_running_=panel_driver.run_turn_panel_ccw();
         }
     }
-    else if (abs(deviation_azimuth())<=tolerance_band_azimuth_)
+    else if (abs(deviation_azimuth())<=adjust_precision_azimuth_)
     {
         panel_driver.stop_turn_panel();
         is_azi_running_=false;
