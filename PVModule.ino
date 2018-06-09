@@ -10,9 +10,11 @@
 #include <EEPROM.h>
 #include <LiquidCrystal.h>
 
-#define DEBUG   /**< Comment out to disable debug messages */
-#define LCD     /**< Comment out no additional LCD is used */
-#define RESET_CALIBRATION   /**< Comment out, if good calibration data is already in EEPROM */
+#define DEBUG                /**< Comment out to disable debug messages */
+//#define LCD                  /**< Comment out no additional LCD is used */
+#define RESET_CALIBRATION    /**< Comment out, if good calibration data is already in EEPROM */
+
+
 
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
@@ -20,7 +22,7 @@ imu::Vector<3> orient;
 
 offset_data_t sensor_offsets, sensor_offsets_load, current_calib;
 
-OrientationMeasurement sensor_mes = OrientationMeasurement();
+OrientationMeasurement sensor_mes;
 RtcAdapter MyRTC;
 OrientationController PanelControl;
 
@@ -52,24 +54,24 @@ void setup(void)
         Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
         while(1);
     }
-
-    delay(500);
+    sensor_mes.setMode(sensor_mes.OPERATION_MODE_COMPASS);
+    delay(1000);
 
     #ifdef RESET_CALIBRATION
     sensor_offsets = sensor_mes.load_calibration_data();
     EEPROM.put(eeAddress, sensor_offsets);
-    delay(500);
+    delay(1000);
     #endif
 
     EEPROM.get(eeAddress, sensor_offsets_load);
 
-    sensor_mes.setMode(sensor_mes.OPERATION_MODE_CONFIG);
-    delay(500);
+    delay(1000);
     sensor_mes.setExtCrystalUse(true);
     Serial.println("Loading Calibartion Data");
     sensor_mes.setSensorOffsets(sensor_offsets_load);
-    delay(500);
-    sensor_mes.setMode(sensor_mes.OPERATION_MODE_NDOF_FMC_OFF);
+    delay(1000);
+    displaySensorOffsets(sensor_offsets_load);
+    delay(1000);
 }
 
 void loop(void)
@@ -83,6 +85,9 @@ void loop(void)
     Serial.print("\t Euler Z: ");
     Serial.print(orient.z(), 4);
     Serial.println("");
+    Serial.print("Time ");
+    Serial.println(MyRTC.read_time().min);
+
     #endif
 
     #ifdef LCD
@@ -93,7 +98,7 @@ void loop(void)
     lcd.setCursor(0, 1);
     lcd.print("Comp");
     lcd.setCursor(11, 1);
-    lcd.print(orient.x());
+    lcd.print(orient.x()+180);
     #endif
 
     PanelControl.orient_panel();
@@ -101,6 +106,7 @@ void loop(void)
 
     #ifdef DEBUG
     displaySensorOffsets(current_calib);
+    displaySensorOffsets(sensor_offsets_load);
     displayCalStatus();
     #endif
 
@@ -182,20 +188,18 @@ void updateCalibration (void) {
     PanelControl.stop_panel();
 
     /** Perform a basic check if calibration data has changed */
-    if ((sensor_offsets_load.accel_offset_x != current_calib.accel_offset_x) || \
+    if (((sensor_offsets_load.accel_offset_x != current_calib.accel_offset_x) || \
             (sensor_offsets_load.mag_offset_x != current_calib.mag_offset_x) || \
-            (sensor_offsets_load.gyro_offset_x != current_calib.gyro_offset_x) && \
-            (sensor_offsets_load.mag_offset_x>0)){
+            (sensor_offsets_load.gyro_offset_x != current_calib.gyro_offset_x)) && \
+            (current_calib.mag_offset_x>0)){
         /** New calibration data is filtered through a simple IIR filter */
-        sensor_offsets= (sensor_offsets_load*19 + current_calib)/20;
+        Serial.println("Calibartion Data is updated");
+        sensor_offsets= (sensor_offsets_load*19 + current_calib)/20.0;
         EEPROM.put(eeAddress, sensor_offsets);
         delay(300);
         EEPROM.get(eeAddress, sensor_offsets_load);
         delay(300);
-        sensor_mes.setMode(sensor_mes.OPERATION_MODE_CONFIG);
-        delay(300);
         sensor_mes.setSensorOffsets(sensor_offsets_load);
         delay(300);
-        sensor_mes.setMode(sensor_mes.OPERATION_MODE_NDOF_FMC_OFF);
     }
 }

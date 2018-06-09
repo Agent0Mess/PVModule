@@ -65,7 +65,9 @@ float OrientationController::deviation_azimuth()
 
     des_azimuth=this->desired_value_azimuth();
     orientation = orient_sensor.get_eulerAngles();
-    result= des_azimuth-orientation.x();
+    /** Sensor returns american convention, so we transform it into european convention by
+     * adding 180 degrees */
+    result= des_azimuth-(orientation.x()+180);
     return result;
 }
 
@@ -108,44 +110,48 @@ float OrientationController::get_adjust_precision_azimuth() const
 
 
 void OrientationController::orient_panel(){
-
-
-    if ((abs(deviation_tilt())>tolerance_band_tilt_)&& !is_tilt_running_)
+    if (is_daytime())
     {
-        if ((deviation_tilt()<0 && deviation_tilt()>(-100)) )
+
+        if(desired_azimuth_>=LOWER_TURN_ANGLE && desired_value_azimuth()<=UPPER_TURN_ANGLE)
         {
-            is_tilt_running_=panel_driver.run_tilt_panel_vertical();
-        }
-        else if(deviation_tilt()>0 && deviation_tilt()<(100))
-        {
-            is_tilt_running_=panel_driver.run_tilt_panel_horizontal();
+            if ((abs(deviation_tilt())>tolerance_band_tilt_)&& !is_tilt_running_)
+            {
+                if ((deviation_tilt()<0 && deviation_tilt()>(-100)) )
+                {
+                    is_tilt_running_=panel_driver.run_tilt_panel_vertical();
+                }
+                else if(deviation_tilt()>0 && deviation_tilt()<(100))
+                {
+                    is_tilt_running_=panel_driver.run_tilt_panel_horizontal();
+                }
+            }
+            else if (abs(deviation_tilt())<=adjust_precision_tilt_)
+            {
+                panel_driver.stop_tilt_panel();
+                is_tilt_running_=false;
+            }
+
+            if ((abs(deviation_azimuth())>tolerance_band_azimuth_)&& !is_azi_running_)
+            {
+                if ((deviation_azimuth()<0))
+                {
+                    is_azi_running_=panel_driver.run_turn_panel_cw();
+                }
+                else if(deviation_azimuth()>0)
+                {
+                    is_azi_running_=panel_driver.run_turn_panel_ccw();
+                }
+            }
+            else if (abs(deviation_azimuth())<=adjust_precision_azimuth_)
+            {
+                panel_driver.stop_turn_panel();
+                is_azi_running_=false;
+            }
+
         }
     }
-    else if (abs(deviation_tilt())<=adjust_precision_tilt_)
-    {
-        panel_driver.stop_tilt_panel();
-        is_tilt_running_=false;
-    }
-
-    if ((abs(deviation_azimuth())>tolerance_band_azimuth_)&& !is_azi_running_)
-    {
-        if ((deviation_azimuth()<0))
-        {
-            is_azi_running_=panel_driver.run_turn_panel_cw();
-        }
-        else if(deviation_azimuth()>0)
-        {
-            is_azi_running_=panel_driver.run_turn_panel_ccw();
-        }
-    }
-    else if (abs(deviation_azimuth())<=adjust_precision_azimuth_)
-    {
-        panel_driver.stop_turn_panel();
-        is_azi_running_=false;
-    }
-
 }
-
 void OrientationController::stop_panel() {
     panel_driver.stop_turn_panel();
     panel_driver.stop_tilt_panel();

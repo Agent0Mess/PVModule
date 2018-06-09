@@ -21,46 +21,46 @@ private:
     float latitude_;
     float longitude_;
 
-    datetime_t woz_;                           // True local time, solar time
-    datetime_t mez_;                           /**< local time - time displayed on your clock */
-    datetime_t hourangtime_;                   // Hour Angle Time
+    datetime_t woz_;                     /**< True local time, solar time */
+    datetime_t mez_;                     /**< local time - time displayed on your clock */
+    datetime_t hourangtime_;             /**< Hour Angle Time */
 
 
-    const float eclipticang_=23.45;      // Ecliptic Angle of the Earth
-    float declang_;                      // Earth Declination Angle in degrees
-    datetime_t  hourangref_;                   // Referenzzeit für hourang
-    float hourang_;                      // HA - Hour Angle
-    float elevang_;                      // Elevation Angle Beta @ Solar Time
+    const float eclipticang_=23.45;      /**< Ecliptic Angle of the Earth */
+    float declang_;                      /**< Earth Declination Angle in degrees */
+    datetime_t  hourangref_;             /**< Reference for hourang */
+    float hourang_;                      /**< HA - Hour Angle */
+    float elevang_;                      /**< Elevation Angle Beta @ Solar Time */
     float azang_;                        /**< Solar Angle Azimut, Angle @ Solar time */
     float pvtiltang_;                    /**< PV Panel tilt Angle, local, horizontal over floor = 0 degrees*/
-    float hsr_;                          // Azimuth @ Sunrise in degrees
-    datetime_t sunrisewoz_;                    // time of sunrise in solar time
-    float b_;                            // used for calculation solar day
-    float e_;                            // equation of time (woz-moz) in minutes
-    datetime_t moz_;                           // mean local time -> woz-e
+    float hsr_;                          /**< Azimuth @ Sunrise in degrees */
+    datetime_t sunrisewoz_;              /**< time of sunrise in solar time */
+    float b_;                            /**< used for calculation solar day */
+    float e_;                            /**< equation of time (woz-moz) in minutes */
+    datetime_t moz_;                     /**< mean local time -> woz-e */
 
-    datetime_t ct_;                            // local clocktime, mez @ local longitude
-    datetime_t st_;                            // local summer time
+    datetime_t ct_;                      /**< local clocktime, mez @ local longitude */
+    datetime_t st_;                      /**< local summer time */
 
-    float geoh_;                         // geometric horizon height
+    float geoh_;                         /**< geometric horizon height */
     datetime_t timediff_;
 
-    datetime_t srwoz_;                         // sunrise in WOZ
-    datetime_t srmoz_;                         // sunrise in MOZ
-    datetime_t srmez_;                         // sunrise in MEZ
-    datetime_t sswoz_;                         // sunset in WOZ
-    datetime_t ssmoz_;                         // sunset in MOZ
-    datetime_t ssmez_;                         // sunset in MEZ
-    datetime_t twelveoclock_;                  //
-    datetime_t oneoclock_;                     //
+    datetime_t srwoz_;                   /**< sunrise in WOZ */
+    datetime_t srmoz_;                   /**< sunrise in MOZ */
+    datetime_t srmez_;                   /**< sunrise in MEZ */
+    datetime_t sswoz_;                   /**< sunset in WOZ */
+    datetime_t ssmoz_;                   /**< sunset in MOZ */
+    datetime_t ssmez_;                   /**< sunset in MEZ */
+    datetime_t twelveoclock_;            /**< twelve oclock const */
+    datetime_t oneoclock_;               /**< one oclock const */
 
 public:
-    //Deklaration der Konstruktoren
+    //Constructor declaration
     Sunpos(float, float);               // (latitude, longitude)
     Sunpos();                           // default is Wiltz, Luxembourg
     //Init
     void init();
-    //Deklaration der Elementfunktionen
+    //methods declaration
     void set_latitude(float);
     float get_latitude();
     void set_longitude(float);

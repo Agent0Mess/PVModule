@@ -12,6 +12,10 @@
  * @brief The OrientationController class provides the functionalities to
  * control the motors and adjust the panel's orientatiion.
  */
+
+#define LOWER_TURN_ANGLE 65     /**< Panel will not turn to a smaller angle */
+#define UPPER_TURN_ANGLE 275   /**< Panel will not turn to a bigger angle */
+
 class OrientationController
 {
 private:

@@ -109,7 +109,7 @@ adafruit_bno055_offsets_t OrientationMeasurement::load_calibration_data() {
     saved_offsets_.accel_radius   =1000;
     saved_offsets_.mag_radius     =620;
 
-    setSensorOffsets(saved_offsets_);
+    //setSensorOffsets(saved_offsets_);
 
     return saved_offsets_;
 }
