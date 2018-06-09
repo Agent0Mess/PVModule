@@ -13,6 +13,9 @@ As well as the Adafruit Sensor library: https://github.com/adafruit/Adafruit_Sen
 In order for the RTC to work properly the following library is used: https://github.com/adafruit/RTClib
 
 The code is designed to run on an Arduino Uno, but it should run on most other boards of the Arduino family as well.
+It has been sucessfully tested with an Arduino Mega 2560.
+
+The functionalities to add a simple 16x2 LCD for testing purposes is also provided in the code. 
 
 Further information will be provided along with the progression of the project.
 
