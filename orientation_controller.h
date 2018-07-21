@@ -8,6 +8,9 @@
 #include "motordriver.h"
 #include <Arduino.h>
 
+#define LOWER_TURN_ANGLE 65     /**< Panel will not turn to a smaller angle */
+#define UPPER_TURN_ANGLE 275 /**< Panel will not turn to a bigger angle */
+
 /**
  * @brief The OrientationController class provides the functionalities to
  * control the motors and adjust the panel's orientatiion.
@@ -28,6 +31,8 @@ private:
 
     float tolerance_band_tilt_;
     float tolerance_band_azimuth_;
+    float adjust_precision_azimuth_;
+    float adjust_precision_tilt_;
 
     bool sun_is_up_;
 
@@ -36,15 +41,19 @@ private:
 
 
 
+
 public:
     OrientationController();
 
+        imu::Vector<3> orient_;
 
     /**
      * @brief is_daytime - Checks if the sun has risen
      * @return Returns true, if it is between sunrise and sunset
      */
     bool is_daytime();
+
+    void begin();
 
     /**
      * @brief Calculates the desired tilt angle for the current time and day
@@ -67,10 +76,20 @@ public:
     void set_tolerance_band_azimuth(float azi_tol);
     float get_tolerance_band_azimuth() const;
 
+    void set_adjust_precision_tilt(float tilt_tol);
+    float get_adjust_precision_tilt() const;
+
+    void set_adjust_precision_azimuth(float azi_tol);
+    float get_adjust_precision_azimuth() const;
+
     void orient_panel();
     void stop_panel();
 
     datetime_t getMez_now() const;
+
+    void readSensorData();
+    bool getIsAziRunning() const;
+    bool getIsTiltRunning() const;
 };
 
 #endif // ORIENTATION_CONTROLLER_H

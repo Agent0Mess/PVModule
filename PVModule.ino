@@ -27,104 +27,51 @@ void setup(void)
 {
     Serial.begin(9600);
 
-    //    if (! MyRTC.begin()) {
-    //      Serial.println("Couldn't find RTC");
-    //      while (1);
-    //    }
+    PanelControl.begin();
+
+        if (! MyRTC.begin()) {
+          Serial.println("Couldn't find RTC");
+          while (1);
+        }
 
     Serial.println("Orientation Sensor Test"); Serial.println("");
-
-    /* Initialise the sensor */
-    if(!sensor_mes.begin())
-    {
-        /* There was a problem detecting the BNO055 ... check your connections */
-        Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-        while(1);
-    }
-
-    delay(500);
-
-    //    #ifdef RESET_CALIBRATION
-    //    sensor_offsets = sensor_mes.load_calibration_data();
-    //    EEPROM.put(eeAddress, sensor_offsets);
-    //    delay(500);
-    //    #endif
-
-    //    EEPROM.get(eeAddress, sensor_offsets_load);
-
-    //    sensor_mes.setMode(sensor_mes.OPERATION_MODE_CONFIG);
-    //    delay(500);
-    //    sensor_mes.setExtCrystalUse(true);
-    //    Serial.println("Loading Calibartion Data");
-    //    sensor_mes.setSensorOffsets(sensor_offsets_load);
-    //    delay(500);
-    //    sensor_mes.setMode(sensor_mes.OPERATION_MODE_NDOF_FMC_OFF);
-    sensor_mes.enableRotationVector(50);
-
+    PanelControl.stop_panel();
 }
 
 void loop(void)
 {
 
-    if (sensor_mes.dataAvailable() == true)
-    {
-        orient=sensor_mes.get_eulerAngles();
         Serial.print("\t Euler X: ");
-        Serial.print(orient.x(), 4);
+        Serial.print(PanelControl.orient_.x(), 4);
         Serial.print("\t Euler Y: ");
-        Serial.print(orient.y(), 4);
+        Serial.print(PanelControl.orient_.y(), 4);
         Serial.print("\t Euler Z: ");
-        Serial.print(orient.z(), 4);
+        Serial.print(PanelControl.orient_.z(), 4);
         Serial.println("");
 
+        Serial.print("\t Deviation Tilt: ");
+        Serial.print(PanelControl.deviation_tilt(), 4);
+        Serial.print("\t Deviation Azimuth: ");
+        Serial.print(PanelControl.deviation_azimuth(), 4);
+        Serial.println("");
 
-//        float quatI = sensor_mes.getQuatI();
-//        float quatJ = sensor_mes.getQuatJ();
-//        float quatK = sensor_mes.getQuatK();
-//        float quatReal = sensor_mes.getQuatReal();
-//        float quatRadianAccuracy = sensor_mes.getQuatRadianAccuracy();
+        Serial.print("\t Desited Tilt: ");
+        Serial.print(PanelControl.desired_value_tilt(), 4);
+        Serial.print("\t Desired Azimuth: ");
+        Serial.print(PanelControl.desired_value_azimuth(), 4);
+        Serial.println("");
+        if (PanelControl.getIsAziRunning()==true);
+        {
+            Serial.println("Azi is running");
+        }
 
-//        Serial.print(quatI, 2);
-//        Serial.print(F(","));
-//        Serial.print(quatJ, 2);
-//        Serial.print(F(","));
-//        Serial.print(quatK, 2);
-//        Serial.print(F(","));
-//        Serial.print(quatReal, 2);
-//        Serial.print(F(","));
-//        Serial.print(quatRadianAccuracy, 2);
-//        Serial.print(F(","));
+        if (PanelControl.getIsTiltRunning()==true);
+        {
+            Serial.println("Tilt is running");
+        }
 
-//        Serial.println();
+        PanelControl.orient_panel();
 
-        //    #ifdef LCD
-        //    lcd.setCursor(0, 0);
-        //    lcd.print("Tilt");
-        //    lcd.setCursor(11, 0);
-        //    lcd.print(orient.z());
-        //    lcd.setCursor(0, 1);
-        //    lcd.print("Comp");
-        //    lcd.setCursor(11, 1);
-        //    lcd.print(orient.x());
-        //    #endif
-
-        //    PanelControl.orient_panel();
-        //    sensor_mes.getSensorOffsets(current_calib);
-
-        //    #ifdef DEBUG
-        //    displaySensorOffsets(current_calib);
-        //    displayCalStatus();
-        //    #endif
-
-        //    updateCalibration();
-
-        delay(500);
-    }
-    else
-    {
-        Serial.println("No data available. Let's wait some more");
-        delay(2000);
-    }
 }
 
 

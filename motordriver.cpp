@@ -37,9 +37,12 @@ bool MotorDriver::run_tilt_panel_horizontal()
 
         }
         else {
-            stop_tilt_panel();
             return false;
         }
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -57,9 +60,12 @@ bool MotorDriver::run_tilt_panel_vertical()
             return true;
         }
         else {
-            stop_tilt_panel();
             return false;
         }
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -80,14 +86,17 @@ bool MotorDriver::run_turn_panel_cw()
             return true;
         }
         else
-            stop_turn_panel();
             return false;
+    }
+    else
+    {
+        return false;
     }
 }
 
 bool MotorDriver::run_turn_panel_ccw()
 {
-    if (millicounter_azi_+1000<=millis())
+    if ((millicounter_azi_+1000)<=millis())
     {
         if (rel_==0) {
             digitalWrite(rel_2_, HIGH);
@@ -95,8 +104,11 @@ bool MotorDriver::run_turn_panel_ccw()
             return true;
         }
         else
-            stop_turn_panel();
             return false;
+    }
+    else
+    {
+        return false;
     }
 }
 

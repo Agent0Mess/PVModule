@@ -95,7 +95,7 @@ void Sunpos::set_hourangref( datetime_t& harefnew) {
 }
 float Sunpos::get_hourang() {
     get_woz();                                         // update woz
-    hourang_=((hourangref_.hour-get_woz().hour)+(1.0/60.0)*(hourangref_.min-get_woz().min)+(1.0/360.0)*(hourangref_.sec-get_woz().sec))*15;
+    hourang_=(((-hourangref_.hour)+get_woz().hour)+(1.0/60.0)*((-hourangref_.min)+get_woz().min)+(1.0/360.0)*((-hourangref_.sec)+get_woz().sec))*15;
     return hourang_;
 }
 float Sunpos::get_elevang() {
@@ -104,10 +104,31 @@ float Sunpos::get_elevang() {
     return elevang_;
 }
 float Sunpos::get_azang() {
-    azang_=deg_*asin(cos(rad_*get_declang())*sin(rad_*get_hourang()))\
+    float tan_alpha;
+    float sin_hourang;
+    float beta;
+    float hourang=get_hourang();
+    float azang_old;
+
+    sin_hourang=sin(rad_*hourang);
+    beta=cos(rad_*hourang)*sin(rad_*latitude_)-tan(rad_*declang_)*cos(rad_*latitude_);
+    tan_alpha=sin_hourang/beta;
+
+    azang_old=deg_*asin(cos(rad_*get_declang())*sin(rad_*get_hourang()))\
             /cos(rad_*get_elevang());
+
+    if (tan_alpha>0 && hourang<0) {
+        azang_=azang_old;
+    }
+    else if (tan_alpha<0 && hourang>0) {
+        azang_=360-azang_old;
+    }
+    else {
+        azang_=180+azang_old;
+    }
     return azang_;
 }
+
 float Sunpos::get_pvtiltang() {
     pvtiltang_=90.0-get_elevang();
     return pvtiltang_;
@@ -241,5 +262,3 @@ datetime_t Sunpos::get_ssmez(){
     ssmez_.sec=ssmoz_.sec+ctsecs;
     return ssmez_.update_format(ssmez_);
 }
-
-
