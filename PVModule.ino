@@ -29,10 +29,10 @@ void setup(void)
 
     PanelControl.begin();
 
-        if (! MyRTC.begin()) {
-          Serial.println("Couldn't find RTC");
-          while (1);
-        }
+//        if (! MyRTC.begin()) {
+//          Serial.println("Couldn't find RTC");
+//          while (1);
+//        }
 
     Serial.println("Orientation Sensor Test"); Serial.println("");
     PanelControl.stop_panel();
@@ -40,7 +40,8 @@ void setup(void)
 
 void loop(void)
 {
-
+        Serial.print(" Is it daytime? ");
+        Serial.println(PanelControl.is_daytime());
         Serial.print("\t Euler X: ");
         Serial.print(PanelControl.orient_.x(), 4);
         Serial.print("\t Euler Y: ");
@@ -55,19 +56,32 @@ void loop(void)
         Serial.print(PanelControl.deviation_azimuth(), 4);
         Serial.println("");
 
+        Serial.print("\t Deviation Tilt Morning Pos: ");
+        Serial.print(PanelControl.deviation_tilt_morning_pos(), 4);
+        Serial.print("\t Deviation Azimuth Morning Pos: ");
+        Serial.print(PanelControl.deviation_azimuth_morning_pos(), 4);
+        Serial.println("");
+
         Serial.print("\t Desited Tilt: ");
         Serial.print(PanelControl.desired_value_tilt(), 4);
         Serial.print("\t Desired Azimuth: ");
         Serial.print(PanelControl.desired_value_azimuth(), 4);
         Serial.println("");
-        if (PanelControl.getIsAziRunning()==true);
-        {
-            Serial.println("Azi is running");
-        }
 
-        if (PanelControl.getIsTiltRunning()==true);
+
+        Serial.print("Azi is running:  ");
+        Serial.println(PanelControl.getIsAziRunning());
+
+        Serial.print("Tilt is running:  ");
+        Serial.println(PanelControl.getIsTiltRunning());
+
+        if(PanelControl.getEmergencyStopped())
         {
-            Serial.println("Tilt is running");
+            Serial.println("----------------Emergency stop------------------------");
+        }
+        if(PanelControl.getPanelIsBlocked())
+        {
+            Serial.println("----------------Panel is blocked------------------------");
         }
 
         PanelControl.orient_panel();

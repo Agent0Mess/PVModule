@@ -26,7 +26,7 @@ void MotorDriver::setup_pins()
 
 bool MotorDriver::run_tilt_panel_horizontal()
 {
-    if (millicounter_tilt_+1000<=millis())
+    if (millicounter_tilt_+2000<=millis())
     {
         if (direct_==0) {
             digitalWrite(direct_A_, HIGH);
@@ -49,7 +49,7 @@ bool MotorDriver::run_tilt_panel_horizontal()
 
 bool MotorDriver::run_tilt_panel_vertical()
 {
-    if (millicounter_tilt_+1000<=millis())
+    if (millicounter_tilt_+2000<=millis())
     {
         if (direct_==0)
         {
@@ -78,15 +78,18 @@ void MotorDriver::stop_tilt_panel()
 
 bool MotorDriver::run_turn_panel_cw()
 {
-    if (millicounter_azi_+1000<=millis())
+    if (millicounter_azi_+2000<=millis())
     {
-        if (rel_==0) {
+        if (rel_==0)
+        {
             digitalWrite(rel_1_, HIGH);
             rel_ = 1;
             return true;
         }
         else
+        {
             return false;
+        }
     }
     else
     {
@@ -96,15 +99,18 @@ bool MotorDriver::run_turn_panel_cw()
 
 bool MotorDriver::run_turn_panel_ccw()
 {
-    if ((millicounter_azi_+1000)<=millis())
+    if (millicounter_azi_+2000<=millis())
     {
-        if (rel_==0) {
+        if (rel_==0)
+        {
             digitalWrite(rel_2_, HIGH);
             rel_ = 2;
             return true;
         }
         else
+        {
             return false;
+        }
     }
     else
     {

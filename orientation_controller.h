@@ -10,6 +10,8 @@
 
 #define LOWER_TURN_ANGLE 65     /**< Panel will not turn to a smaller angle */
 #define UPPER_TURN_ANGLE 275 /**< Panel will not turn to a bigger angle */
+#define SENSORPRECISION 1   /**< Precision of the sensor */
+#define BLOCKINGTIME 7000 /**< Time until blocking is detected in millisec */
 
 /**
  * @brief The OrientationController class provides the functionalities to
@@ -29,6 +31,9 @@ private:
     float deviation_tilt_;
     float deviation_azimuth_;
 
+    int direction_tilt_;
+    int direction_turn_;
+
     float tolerance_band_tilt_;
     float tolerance_band_azimuth_;
     float adjust_precision_azimuth_;
@@ -39,6 +44,18 @@ private:
     bool is_tilt_running_;
     bool is_azi_running_;
 
+    float last_azi_,new_azi_;
+    float last_tilt_,new_tilt_;
+
+    bool morning_position_tilt_;
+    bool morning_position_turn_;
+
+    bool emergency_stopped;
+
+    unsigned long turn_check_time_;
+    unsigned long tilt_check_time_;
+
+    bool panel_is_blocked_;
 
 
 
@@ -55,6 +72,10 @@ public:
 
     void begin();
 
+
+    float currentTilt();
+
+    float currentAzimuth();
     /**
      * @brief Calculates the desired tilt angle for the current time and day
      * @return Desired tilt angle in degrees
@@ -90,6 +111,16 @@ public:
     void readSensorData();
     bool getIsAziRunning() const;
     bool getIsTiltRunning() const;
+    bool getSunIsUp() const;
+
+    float deviation_tilt_morning_pos();
+    float deviation_azimuth_morning_pos();
+
+    bool getEmergencyStopped() const;
+
+    bool checkIsPanelTilting();
+    bool checkIsPanelTurning();
+    bool getPanelIsBlocked() const;
 };
 
 #endif // ORIENTATION_CONTROLLER_H
