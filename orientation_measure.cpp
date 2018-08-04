@@ -4,11 +4,6 @@ OrientationMeasurement::OrientationMeasurement ()
 {
 }
 
-offset_data_t offset_data_t::operator * (const int multiplicator){
-    offset_data_t result;
-    result.accel_offset_x= this->accel_offset_x * multiplicator;
-    result.accel_offset_y= this->accel_offset_y * multiplicator;
-    result.accel_offset_z= this->accel_offset_z * multiplicator;
 
 imu::Vector<3> OrientationMeasurement::get_eulerAngles(){
     imu::Vector<3> orientation;
