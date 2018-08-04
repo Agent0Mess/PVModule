@@ -52,7 +52,7 @@ private:
     bool morning_position_tilt_;
     bool morning_position_turn_;
 
-    bool emergency_stopped;
+    bool emergency_stopped_;
 
     unsigned long turn_check_time_;
     unsigned long tilt_check_time_;

@@ -28,7 +28,7 @@ bool OrientationController::getSunIsUp() const
 
 bool OrientationController::getEmergencyStopped() const
 {
-    return emergency_stopped;
+    return emergency_stopped_;
 }
 
 bool OrientationController::checkIsPanelTilting()
@@ -78,7 +78,7 @@ OrientationController::OrientationController()
     set_adjust_precision_azimuth(3.5);
     set_tolerance_band_tilt(3.0);
     set_adjust_precision_tilt(2.0);
-    emergency_stopped=false;
+    emergency_stopped_=false;
     panel_is_blocked_=false;
     turn_check_time_=0;
 
@@ -127,6 +127,7 @@ void OrientationController::readSensorData()
         }
         else
         {
+            /** If millis() overflows, this prevents the loop from running too long */
             delay(50);
             wait_counter++;
         }
@@ -136,7 +137,7 @@ void OrientationController::readSensorData()
     if (is_sensor_read==false || wait_counter>=20)
     {
         stop_panel();
-        emergency_stopped=true;
+        emergency_stopped_=true;
         orient_sensor.softReset();
         begin();
     }
@@ -209,7 +210,7 @@ float OrientationController::deviation_azimuth_morning_pos()
     srmez= sun_position.get_srmez();
     sun_position.set_mez(srmez);
 
-    des_azimuth = MORNING_POS_AZIMUTH;//sun_position.get_azang();
+    des_azimuth = MORNING_POS_AZIMUTH;
     result = des_azimuth-currentAzimuth();
     return result;
 }
@@ -255,7 +256,7 @@ void OrientationController::orient_panel()
     this->readSensorData();
 
     /** Check if panel has turned out of range, if so, stop motors */
-    if (currentAzimuth()<LOWER_TURN_ANGLE || currentAzimuth()>UPPER_TURN_ANGLE || emergency_stopped)
+    if (currentAzimuth()<LOWER_TURN_ANGLE || currentAzimuth()>UPPER_TURN_ANGLE || emergency_stopped_)
     {
         panel_driver.stop_turn_panel();
         is_azi_running_=false;
@@ -291,10 +292,10 @@ void OrientationController::orient_panel()
             morning_position_tilt_=false;
             morning_position_turn_=false;
 
-            if(this->desired_value_azimuth()>=LOWER_TURN_ANGLE && this->desired_value_azimuth()<=UPPER_TURN_ANGLE)
+            if(this->desired_value_azimuth()>=MORNING_POS_AZIMUTH && this->desired_value_azimuth()<=UPPER_TURN_ANGLE)
             {
                 /** If the panel's tilt is not good, and the panel is not already
-             * in a tilt motion, start tilting the panel in the right direction */
+                 * in a tilt motion, start tilting the panel in the right direction */
                 if ((abs(deviation_tilt())>tolerance_band_tilt_)&& !is_tilt_running_)
                 {
                     if ((deviation_tilt()<0))
@@ -324,7 +325,7 @@ void OrientationController::orient_panel()
                     direction_tilt_=0;
                 }
                 /** If the panel's turn (azimuth) is not good, and the panel is not already
-             * in a turning motion, start turning the panel in the right direction */
+                  * in a turning motion, start turning the panel in the right direction */
                 if ((abs(deviation_azimuth())>tolerance_band_azimuth_)&& !is_azi_running_)
                 {
                     if ((deviation_azimuth()<0))
@@ -357,7 +358,7 @@ void OrientationController::orient_panel()
             }
         }
     }
-    if (currentAzimuth()+5<LOWER_TURN_ANGLE || currentAzimuth()-5>UPPER_TURN_ANGLE)
+    if (currentAzimuth()<LOWER_TURN_ANGLE || currentAzimuth()>UPPER_TURN_ANGLE)
     {
         panel_driver.stop_turn_panel();
         is_azi_running_=false;
@@ -367,10 +368,11 @@ void OrientationController::orient_panel()
     {
         if (!is_daytime())
         {
+            /** If the panel is not already in its morning position */
             if (morning_position_tilt_==false || morning_position_turn_==false)
             {
                 /** If the panel's tilt is not good, and the panel is not already
-             * in a tilt motion, start tilting the panel in the right direction */
+                * in a tilt motion, start tilting the panel in the right direction */
                 if ((abs(deviation_tilt_morning_pos())>tolerance_band_tilt_)&& !is_tilt_running_)
                 {
                     if ((deviation_tilt_morning_pos()<0))
@@ -401,15 +403,14 @@ void OrientationController::orient_panel()
                     direction_tilt_=0;
                 }
                 /** If the panel's turn (azimuth) is not good, and the panel is not already
-             * in a turning motion, start turning the panel in the cw direction */
+                  * in a turning motion, start turning the panel in the cw direction */
                 if ((abs(deviation_azimuth_morning_pos())>tolerance_band_azimuth_)&& !is_azi_running_)
                 {
                     is_azi_running_=panel_driver.run_turn_panel_cw();
                     direction_turn_=1;
                 }
                 /** If the panel has reached a good turn position, stop */
-                else if (abs(deviation_azimuth_morning_pos())<=tolerance_band_azimuth_+5 ||
-                         currentAzimuth()<=LOWER_TURN_ANGLE)
+                else if (abs(deviation_azimuth_morning_pos())<=tolerance_band_azimuth_)
                 {
                     panel_driver.stop_turn_panel();
                     is_azi_running_=false;
@@ -418,7 +419,6 @@ void OrientationController::orient_panel()
                 }
             }
         }
-
     }
 }
 
