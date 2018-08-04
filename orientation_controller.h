@@ -11,7 +11,9 @@
 #define LOWER_TURN_ANGLE 65     /**< Panel will not turn to a smaller angle */
 #define UPPER_TURN_ANGLE 275 /**< Panel will not turn to a bigger angle */
 #define SENSORPRECISION 1   /**< Precision of the sensor */
-#define BLOCKINGTIME 7000 /**< Time until blocking is detected in millisec */
+#define BLOCKINGTIME 2500 /**< Time until blocking is detected in millisec */
+#define MORNING_POS_AZIMUTH 70
+#define MORNING_POS_TILT 80
 
 /**
  * @brief The OrientationController class provides the functionalities to
@@ -44,8 +46,8 @@ private:
     bool is_tilt_running_;
     bool is_azi_running_;
 
-    float last_azi_,new_azi_;
-    float last_tilt_,new_tilt_;
+    float last_azi_,new_azi_,second_azi_;
+    float last_tilt_,new_tilt_,second_tilt_;
 
     bool morning_position_tilt_;
     bool morning_position_turn_;
