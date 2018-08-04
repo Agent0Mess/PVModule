@@ -26,7 +26,7 @@ private:
     datetime_t hourangtime_;             /**< Hour Angle Time */
 
 
-    const float eclipticang_=23.45;      /**< Ecliptic Angle of the Earth */
+    //const float eclipticang_=23.45;      /**< Ecliptic Angle of the Earth */
     float declang_;                      /**< Earth Declination Angle in degrees */
     datetime_t  hourangref_;             /**< Reference for hourang */
     float hourang_;                      /**< HA - Hour Angle */
@@ -51,8 +51,6 @@ private:
     datetime_t sswoz_;                   /**< sunset in WOZ */
     datetime_t ssmoz_;                   /**< sunset in MOZ */
     datetime_t ssmez_;                   /**< sunset in MEZ */
-    datetime_t twelveoclock_;            /**< twelve oclock const */
-    datetime_t oneoclock_;               /**< one oclock const */
 
 public:
     //Constructor declaration
@@ -92,11 +90,6 @@ public:
     float get_geoh();
     void set_timediff( datetime_t& diffnew );
     datetime_t get_timediff();
-
-    void set_twelveoclock( datetime_t& twelvenew);
-    void set_oneoclock ( datetime_t& onenew);
-    datetime_t get_twelveoclock();
-    datetime_t get_oneoclock ();
 
     datetime_t get_srwoz();
     datetime_t get_srmoz();

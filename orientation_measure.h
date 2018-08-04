@@ -1,25 +1,18 @@
 #ifndef ORIENTATIONMEASURE_H
 #define ORIENTATIONMEASURE_H
 
-#include <Adafruit_BNO055.h>
-#include <utility/quaternion.h>
+
+#include "SparkFun_BNO080_Arduino_Library.h"
 #include <utility/vector.h>
+#include <utility/quaternion.h>
 #include <math.h>
 
 
-struct offset_data_t : public adafruit_bno055_offsets_t
-{
 
-    offset_data_t operator + (const offset_data_t offset2);
-    offset_data_t operator * (const int multiplicator);
-    offset_data_t operator / (const double divisor);
-    void operator = (adafruit_bno055_offsets_t bno_offsets);
-};
-
-class OrientationMeasurement : public Adafruit_BNO055, public imu::Quaternion
+class OrientationMeasurement : public BNO080
 {
 private:
-    adafruit_bno055_offsets_t saved_offsets_;
+
 public:
     /**
      * @brief Standard Constructor for class
@@ -30,26 +23,10 @@ public:
     OrientationMeasurement ();
 
     /**
-     * @brief Constructor if your sensor's id an address are are different
-     * @param sensorID - Standard is -1
-     * @param address - Standard is BNO055_ADDRESS_A
-     */
-    OrientationMeasurement (int32_t sensorID, uint8_t address);
-
-    /**
      * @brief Calculates the euler angles of the sensor's orientation
      * @return angles around x,y anz z axis in degrees
      */
-    imu::Vector<3> get_eulerAngles() const;
-
-    /**
-     * @brief Loads saved calibration data, for the specific sensor
-     * in use.
-     *
-     * If you want to use a different sensor, calibration should be
-     * adapted in the function.
-     */
-    adafruit_bno055_offsets_t load_calibration_data ();
+    imu::Vector<3> get_eulerAngles();
 
 };
 

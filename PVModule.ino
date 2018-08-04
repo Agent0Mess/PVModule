@@ -7,199 +7,83 @@
 #include "motordriver.h"
 #include "orientation_controller.h"
 #include "sunpos.h"
-#include <EEPROM.h>
-#include <LiquidCrystal.h>
-
-#define DEBUG                /**< Comment out to disable debug messages */
-//#define LCD                  /**< Comment out no additional LCD is used */
-#define RESET_CALIBRATION    /**< Comment out, if good calibration data is already in EEPROM */
 
 
+#define LEDPIN 13
 
-
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
-imu::Vector<3> orient;
-
-offset_data_t sensor_offsets, sensor_offsets_load, current_calib;
-
-OrientationMeasurement sensor_mes;
-RtcAdapter MyRTC;
+OrientationMeasurement sensor_mes = OrientationMeasurement();
 OrientationController PanelControl;
-
-#ifdef LCD
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-#endif
-
-int eeAddress = 0; /**< Address for calibration data in EEPROM*/
 
 void setup(void)
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
+    pinMode(LEDPIN, OUTPUT);
+    digitalWrite(LEDPIN,HIGH);
 
-    #ifdef LCD
-    lcd.begin(16, 2);
-    #endif
+    PanelControl.begin();
 
-    if (! MyRTC.begin()) {
-      Serial.println("Couldn't find RTC");
-      while (1);
-    }
-
-    Serial.println("Orientation Sensor Test"); Serial.println("");
-
-    /* Initialise the sensor */
-    if(!bno.begin()){
-        /* There was a problem detecting the BNO055 ... check your connections */
-        Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-        while(1);
-    }
-    sensor_mes.setMode(sensor_mes.OPERATION_MODE_COMPASS);
-    delay(1000);
-
-    #ifdef RESET_CALIBRATION
-    sensor_offsets = sensor_mes.load_calibration_data();
-    EEPROM.put(eeAddress, sensor_offsets);
-    delay(1000);
-    #endif
-
-    EEPROM.get(eeAddress, sensor_offsets_load);
-
-    delay(1000);
-    sensor_mes.setExtCrystalUse(true);
-    Serial.println("Loading Calibartion Data");
-    sensor_mes.setSensorOffsets(sensor_offsets_load);
-    delay(1000);
-    displaySensorOffsets(sensor_offsets_load);
-    delay(1000);
+    Serial.println("Orient Sensor Test"); Serial.println("");
+    PanelControl.stop_panel();
+    digitalWrite(LEDPIN,LOW);
 }
 
 void loop(void)
 {
-    #ifdef DEBUG
-    orient=sensor_mes.get_eulerAngles();
-    Serial.print("\t Euler X: ");
-    Serial.print(orient.x(), 4);
-    Serial.print("\t Euler Y: ");
-    Serial.print(orient.y(), 4);
-    Serial.print("\t Euler Z: ");
-    Serial.print(orient.z(), 4);
-    Serial.println("");
-    Serial.print("Time ");
-    Serial.println(MyRTC.read_time().min);
-
-    #endif
-
-    #ifdef LCD
-    lcd.setCursor(0, 0);
-    lcd.print("Tilt");
-    lcd.setCursor(11, 0);
-    lcd.print(orient.z());
-    lcd.setCursor(0, 1);
-    lcd.print("Comp");
-    lcd.setCursor(11, 1);
-    lcd.print(orient.x()+180);
-    #endif
-
-    PanelControl.orient_panel();
-    sensor_mes.getSensorOffsets(current_calib);
-
-    #ifdef DEBUG
-    displaySensorOffsets(current_calib);
-    displaySensorOffsets(sensor_offsets_load);
-    displayCalStatus();
-    #endif
-
-    updateCalibration();
-
-}
+        Serial.print(" Is day? ");
+        Serial.println(PanelControl.is_daytime());
+        Serial.print("\t  doy: ");
+        Serial.print(PanelControl.getMez_now().doy);
+        Serial.print("\t Hour: ");
+        Serial.print(PanelControl.getMez_now().hour);
+        Serial.print("\t Min: ");
+        Serial.print(PanelControl.getMez_now().min);
+        Serial.println("");
 
 
-/**************************************************************************/
-/*
-    Display sensor calibration status
-    */
-/**************************************************************************/
-void displayCalStatus(void)
-{
-    /* Get the four calibration values (0..3) */
-    /* Any sensor data reporting 0 should be ignored, */
-    /* 3 means 'fully calibrated" */
-    uint8_t system, gyro, accel, mag;
-    system = gyro = accel = mag = 0;
-    sensor_mes.getCalibration(&system, &gyro, &accel, &mag);
+        Serial.print("\t Dev Tilt: ");
+        Serial.print(PanelControl.deviation_tilt(), 4);
+        Serial.print("\t Dev Azi: ");
+        Serial.print(PanelControl.deviation_azimuth(), 4);
+        Serial.println("");
 
-    /* The data should be ignored until the system calibration is > 0 */
-    Serial.print("\t");
-    if (!system)
-    {
-        Serial.print("! ");
-    }
+        Serial.print("\t Dev Tilt MP: ");
+        Serial.print(PanelControl.deviation_tilt_morning_pos(), 4);
+        Serial.print("\t Dev Azimuth MP: ");
+        Serial.print(PanelControl.deviation_azimuth_morning_pos(), 4);
+        Serial.println("");
 
-    /* Display the individual values */
-    Serial.print("Sys:");
-    Serial.print(system, DEC);
-    Serial.print(" G:");
-    Serial.print(gyro, DEC);
-    Serial.print(" A:");
-    Serial.print(accel, DEC);
-    Serial.print(" M:");
-    Serial.print(mag, DEC);
-}
+        Serial.print("\t Des Tilt: ");
+        Serial.print(PanelControl.desired_value_tilt(), 4);
+        Serial.print("\t Des Azi: ");
+        Serial.print(PanelControl.desired_value_azimuth(), 4);
+        Serial.println("");
 
-/**************************************************************************/
-/*
-    Display the raw calibration offset and radius data
-    */
-/**************************************************************************/
-void displaySensorOffsets(const adafruit_bno055_offsets_t &calibData)
-{
-    Serial.println("Accelerometer: ");
-    Serial.print(calibData.accel_offset_x); Serial.print(" ");
-    Serial.print(calibData.accel_offset_y); Serial.print(" ");
-    Serial.print(calibData.accel_offset_z); Serial.print(" ");
+        Serial.print("\t C. Tilt: ");
+        Serial.print(PanelControl.currentTilt(), 4);
+        Serial.print("\t C. Azi: ");
+        Serial.print(PanelControl.currentAzimuth(), 4);
+        Serial.println("");
 
-    Serial.println("\nGyro: ");
-    Serial.print(calibData.gyro_offset_x); Serial.print(" ");
-    Serial.print(calibData.gyro_offset_y); Serial.print(" ");
-    Serial.print(calibData.gyro_offset_z); Serial.print(" ");
+        Serial.print("Azi runs: ");
+        Serial.println(PanelControl.getIsAziRunning());
 
-    Serial.println("\nMag: ");
-    Serial.print(calibData.mag_offset_x); Serial.print(" ");
-    Serial.print(calibData.mag_offset_y); Serial.print(" ");
-    Serial.print(calibData.mag_offset_z); Serial.print(" ");
+        Serial.print("Tilt runs:  ");
+        Serial.println(PanelControl.getIsTiltRunning());
 
-    Serial.println("\nAccel Radius: ");
-    Serial.print(calibData.accel_radius);
+        if(PanelControl.getEmergencyStopped())
+        {
+            Serial.println("---Stop---");
+        }
+        if(PanelControl.getPanelIsBlocked())
+        {
+            while (1)
+            {
+                Serial.println("---Blocked---");
+                digitalWrite(LEDPIN,HIGH);
+                delay(5000);
+            }
+        }
 
-    Serial.println("\nMag Radius: ");
-    Serial.print(calibData.mag_radius);
-}
+        PanelControl.orient_panel();
 
-/**************************************************************************/
-/*
-    Update Calibration
-    */
-/**************************************************************************/
-
-void updateCalibration (void) {
-    /** Turn off panel for savety. It should not be moving when
-            loading a new calibration */
-    PanelControl.stop_panel();
-
-    /** Perform a basic check if calibration data has changed */
-    if (((sensor_offsets_load.accel_offset_x != current_calib.accel_offset_x) || \
-            (sensor_offsets_load.mag_offset_x != current_calib.mag_offset_x) || \
-            (sensor_offsets_load.gyro_offset_x != current_calib.gyro_offset_x)) && \
-            (current_calib.mag_offset_x>0)){
-        /** New calibration data is filtered through a simple IIR filter */
-        Serial.println("Calibartion Data is updated");
-        sensor_offsets= (sensor_offsets_load*19 + current_calib)/20.0;
-        EEPROM.put(eeAddress, sensor_offsets);
-        delay(300);
-        EEPROM.get(eeAddress, sensor_offsets_load);
-        delay(300);
-        sensor_mes.setSensorOffsets(sensor_offsets_load);
-        delay(300);
-    }
 }

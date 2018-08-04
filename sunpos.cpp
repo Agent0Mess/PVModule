@@ -27,17 +27,11 @@ void Sunpos::init() {
     haref.hour=12L;
     haref.min=0L;
     haref.sec=0L;
-    datetime_t onetime;
-    onetime.hour=1L;
-    onetime.min=0L;
-    onetime.sec=0L;
 
     update_woz();
     set_mez(inittime);
     set_hourangref(haref);
     set_timediff(inittime);
-    set_twelveoclock(haref);
-    set_oneoclock(onetime);
     set_geoh(-0.01454);                     /**< It might be necessary to adapt this constant */
 
     set_doy(1);
@@ -59,10 +53,14 @@ float Sunpos::get_longitude() {
 
 void Sunpos::update_woz() {
     datetime_t woz_temp;
+    datetime_t oneoclock;
+    oneoclock.hour=1L;
+    oneoclock.min=0L;
+    oneoclock.sec=0L;
     woz_temp=mez_;
     woz_temp.min=woz_temp.min+get_e()+4*longitude_;
     woz_temp=woz_temp.update_format(woz_temp);
-    woz_temp=woz_temp-oneoclock_;
+    woz_temp=woz_temp-oneoclock;
     woz_=woz_temp.update_format(woz_temp);
 }
 
@@ -83,11 +81,8 @@ int Sunpos::get_doy() {
     return mez_.doy;
 }
 
-float Sunpos::get_eclipticang() {
-    return eclipticang_;
-}
 float Sunpos::get_declang() {
-    declang_=get_eclipticang()*sin(((2*PI)/365.0)*(get_doy()-81.0));
+    declang_=23.45*sin(((2*PI)/365.0)*(get_doy()-81.0));
     return declang_;
 }
 void Sunpos::set_hourangref( datetime_t& harefnew) {
@@ -109,13 +104,13 @@ float Sunpos::get_azang() {
     float beta;
     float hourang=get_hourang();
     float azang_old;
+    float declang= get_declang();
 
     sin_hourang=sin(rad_*hourang);
-    beta=cos(rad_*hourang)*sin(rad_*latitude_)-tan(rad_*declang_)*cos(rad_*latitude_);
+    beta=cos(rad_*hourang)*sin(rad_*latitude_)-tan(rad_*declang)*cos(rad_*latitude_);
     tan_alpha=sin_hourang/beta;
 
-    azang_old=deg_*asin(cos(rad_*get_declang())*sin(rad_*get_hourang()))\
-            /cos(rad_*get_elevang());
+    azang_old=deg_*asin(cos(rad_*get_declang())*sin(rad_*get_hourang())/cos(rad_*get_elevang()));
 
     if (tan_alpha>0 && hourang<0) {
         azang_=azang_old;
@@ -128,7 +123,6 @@ float Sunpos::get_azang() {
     }
     return azang_;
 }
-
 float Sunpos::get_pvtiltang() {
     pvtiltang_=90.0-get_elevang();
     return pvtiltang_;
@@ -209,21 +203,12 @@ datetime_t Sunpos::get_timediff(){
     return timediff_.update_format(timediff_);
 }
 
-void Sunpos::set_twelveoclock( datetime_t& twelvenew) {
-    twelveoclock_=twelvenew;
-}
-void Sunpos::set_oneoclock( datetime_t& onenew) {
-    oneoclock_=onenew;
-}
-datetime_t Sunpos::get_twelveoclock(void) {
-    return twelveoclock_;
-}
-datetime_t Sunpos::get_oneoclock(void) {
-    return oneoclock_;
-}
 
 datetime_t Sunpos::get_srwoz(){
-    datetime_t twelve=get_twelveoclock();
+    datetime_t twelve;
+    twelve.hour=12L;
+    twelve.min=0L;
+    twelve.sec=0L;
     datetime_t timed=get_timediff();
     srwoz_=twelve-timed;
     return srwoz_.update_format(srwoz_);
@@ -243,7 +228,10 @@ datetime_t Sunpos::get_srmez(){
     return srmez_.update_format(srmez_);
 }
 datetime_t Sunpos::get_sswoz(){
-    datetime_t twelve=get_twelveoclock();
+    datetime_t twelve;
+    twelve.hour=12L;
+    twelve.min=0L;
+    twelve.sec=0L;
     datetime_t timed=get_timediff();
     srwoz_=twelve+timed;
     return srwoz_.update_format(srwoz_);
