@@ -8,7 +8,7 @@
       - sudo mv arduino-1.8.5 /usr/local/share/arduino
       - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
     install:
-      - arduino --install-library "RTClib","SparkFun BNO080 Cortex Based IMU","Adafruit BNO055"
+      - arduino --install-library "RTClib","SparkFun BNO080 Cortex Based IMU","Adafruit BNO055","Adafruit Unified Sensor"
     script:
       - arduino --verify --board arduino:avr:uno $PWD/PVModule.ino
     notifications:
