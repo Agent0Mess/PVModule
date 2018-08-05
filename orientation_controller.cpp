@@ -134,7 +134,7 @@ void OrientationController::readSensorData()
     }
     /** If the sensor hangs and does not send new data,
      * stop the motors and try to restart the sensor */
-    if (is_sensor_read==false || wait_counter>=20)
+    if (is_sensor_read==false || wait_counter>20)
     {
         stop_panel();
         emergency_stopped_=true;
