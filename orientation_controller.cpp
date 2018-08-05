@@ -1,5 +1,6 @@
 #include <math.h>
 #include "orientation_controller.h"
+#include <EEPROM.h>
 
 /** Depending on the mecanical construction of the panel
  * and the position of the sensor */
@@ -92,6 +93,7 @@ void OrientationController::begin()
     while(!current_time.begin()){}
     delay(1000);
     orient_sensor.enableRotationVector(50);
+    sensor_read_counter_=0;
 }
 
 bool OrientationController::isDaytime()
@@ -123,7 +125,13 @@ void OrientationController::readSensorData()
         {
             orient_=orient_sensor.get_eulerAngles();
             is_sensor_read=true;
-            emergency_stopped_=false;
+            sensor_read_counter_++;
+            /** Discard the first few values after restart before resetting emergency stop */
+            if (sensor_read_counter_ > SENSOR_GARBAGE_VALUES)
+            {
+                emergency_stopped_=false;
+                sensor_read_counter_ = SENSOR_GARBAGE_VALUES; /** Do this to prevent sensor_read_counter from overflow */
+            }
             break;
         }
         else
@@ -135,11 +143,15 @@ void OrientationController::readSensorData()
     }
     /** If the sensor hangs and does not send new data,
      * stop the motors and try to restart the sensor */
-    if (is_sensor_read==false || wait_counter>=20)
+    if (is_sensor_read==false || wait_counter>20)
     {
         stopPanel();
         emergency_stopped_=true;
+        /** Write 88 into EEPROM for later debugging */
+        EEPROM.write(0, 88);
+
         orient_sensor.softReset();
+        sensor_read_counter_=0;
         begin();
     }
 }
@@ -359,7 +371,7 @@ void OrientationController::orientPanel()
             }
         }
     }
-    if (currentAzimuth()<LOWER_TURN_ANGLE || currentAzimuth()>UPPER_TURN_ANGLE)
+    if (currentAzimuth()<LOWER_TURN_ANGLE || currentAzimuth()>UPPER_TURN_ANGLE || emergency_stopped_)
     {
         panel_driver.stop_turn_panel();
         is_azi_running_=false;

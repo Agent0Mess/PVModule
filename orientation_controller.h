@@ -12,8 +12,9 @@
 #define UPPER_TURN_ANGLE 275 /**< Panel will not turn to a bigger angle */
 #define SENSORPRECISION 1   /**< Precision of the sensor */
 #define BLOCKINGTIME 2500 /**< Time until blocking is detected in millisec */
-#define MORNING_POS_AZIMUTH 70
-#define MORNING_POS_TILT 80
+#define MORNING_POS_AZIMUTH 70 /**< Morning position azimuth angle */
+#define MORNING_POS_TILT 80 /**< Morning position tilt angle */
+#define SENSOR_GARBAGE_VALUES 5 /**< Number of unreliable sensor values after reset */
 
 /**
  * @brief The OrientationController class provides the functionalities to
@@ -64,6 +65,8 @@ private:
     bool panel_is_blocked_; /**< Is blocking stop active */
 
     imu::Vector<3> orient_; /**< Current orientation */
+
+    int sensor_read_counter_; /**< Contains the number of sensor reads sonce restart */
 
 public:
     /**
