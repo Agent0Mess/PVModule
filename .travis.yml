@@ -38,7 +38,6 @@ install:
       - arduino --install-library "RTClib","SparkFun BNO080 Cortex Based IMU","Adafruit BNO055","Adafruit Unified Sensor"
 script:
     - arduino --verify --board arduino:avr:uno $PWD/PVModule.ino
-    - make
 notifications:
     email:
       on_success: change
