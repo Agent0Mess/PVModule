@@ -6,7 +6,7 @@
 #include "motordriver.h"
 #include "orientation_controller.h"
 #include "sunpos.h"
-#include <MemoryFree.h>
+//#include <MemoryFree.h>
 
 
 #define LEDPIN 13
