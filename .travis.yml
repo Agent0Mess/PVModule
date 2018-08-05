@@ -13,16 +13,6 @@ env:
     - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
     - GH_REPO_REF: github.com/Agent0Mess/PVModule.git
 
-# Install dependencies
-addons:
-  apt:
-    packages:
-      - doxygen
-      - doxygen-doc
-      - doxygen-latex
-      - doxygen-gui
-      - graphviz
-
     
     language: c
     before_install:
@@ -33,6 +23,17 @@ addons:
       - tar xf arduino-1.8.5-linux64.tar.xz
       - sudo mv arduino-1.8.5 /usr/local/share/arduino
       - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
+      
+      # Install dependencies
+    addons:
+        apt:
+            packages:
+            - doxygen
+            - doxygen-doc
+            - doxygen-latex
+            - doxygen-gui
+            - graphviz
+      
     install:
       - arduino --install-library "RTClib","SparkFun BNO080 Cortex Based IMU","Adafruit BNO055","Adafruit Unified Sensor"
     script:
