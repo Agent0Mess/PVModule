@@ -7,12 +7,15 @@
 #include "orientation_controller.h"
 #include "sunpos.h"
 #include <MemoryFree.h>
+#include <EEPROM.h>
 
 
 #define LEDPIN 13
 
 OrientationMeasurement sensor_mes = OrientationMeasurement();
 OrientationController PanelControl;
+
+int addr = 0;
 
 void setup(void)
 {
@@ -73,20 +76,36 @@ void loop(void)
 //        Serial.print("freeMemory()=");
 //        Serial.println(freeMemory());
 
-        if(PanelControl.getEmergencyStopped())
+    if(PanelControl.getEmergencyStopped())
+    {
+        Serial.println("---Stop---");
+    }
+    if(PanelControl.getPanelIsBlocked())
+    {
+        while (1)
         {
-            Serial.println("---Stop---");
+            Serial.println("---Blocked---");
+            digitalWrite(LEDPIN,HIGH);
+            delay(5000);
         }
-        if(PanelControl.getPanelIsBlocked())
-        {
-            while (1)
-            {
-                Serial.println("---Blocked---");
-                digitalWrite(LEDPIN,HIGH);
-                delay(5000);
-            }
-        }
+    }
 
-        PanelControl.orient_panel();
+    PanelControl.orient_panel();
 
+    if(millis()+1000<millis())
+    {
+        EEPROM.write(addr, 99);
+        addr+=1;
+    }
+
+    if(PanelControl.getEmergencyStopped())
+    {
+        EEPROM.write(addr, 88);
+        addr+=1;
+    }
+
+    if (addr == EEPROM.length())
+    {
+      addr = 0;
+    }
 }

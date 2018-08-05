@@ -83,28 +83,57 @@ public:
      */
     bool is_daytime();
 
+    /**
+     * @brief Begins RTC and sensor
+     */
     void begin();
 
-
+    /**
+     * @brief Gets the current offset corrected tilt angle of the panel
+     * @return current tilt angle of the panel in degrees
+     */
     float currentTilt();
 
+    /**
+     * @brief Gets the current offset corrected azimuth angle of the panel
+     * @return current azimuth angle in degrees
+     */
     float currentAzimuth();
+
     /**
      * @brief Calculates the desired tilt angle for the current time and day
      * @return Desired tilt angle in degrees
      */
-    float desired_value_tilt();
+    float desiredValueTilt();
 
     /**
      * @brief Calculates the desired azimut angle for the current time and day
      * @return Desired azimut angle in degrees
      */
-    float desired_value_azimuth();
+    float desiredValueAzimuth();
 
+    /**
+     * @brief Gets the deviation of the tilt angle (desired tilt - current tilt)
+     * @return deviation of the tilt angle in degrees
+     */
     float deviation_tilt();
+
+    /**
+     * @brief Gets the deviation of the azimuth angle (desired azimuth - current azimuth)
+     * @return deviation of the azimuth angle in degrees
+     */
     float deviation_azimuth();
 
+    /**
+     * @brief Sets the tilt tolerance band
+     * @param Tilt tolerance band in degrees
+     */
     void set_tolerance_band_tilt(float tilt_tol);
+
+    /**
+     * @brief Gets the tilt tolerance band
+     * @return Tilt tolerance band in degrees
+     */
     float get_tolerance_band_tilt() const;
 
     void set_tolerance_band_azimuth(float azi_tol);

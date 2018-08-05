@@ -123,6 +123,7 @@ void OrientationController::readSensorData()
         {
             orient_=orient_sensor.get_eulerAngles();
             is_sensor_read=true;
+            emergency_stopped_=false;
             break;
         }
         else
@@ -143,14 +144,14 @@ void OrientationController::readSensorData()
     }
 }
 
-float OrientationController::desired_value_tilt()
+float OrientationController::desiredValueTilt()
 {
     mez_now_=current_time.read_time();
     sun_position.set_mez(mez_now_);
     return sun_position.get_pvtiltang();
 }
 
-float OrientationController::desired_value_azimuth()
+float OrientationController::desiredValueAzimuth()
 {
     mez_now_=current_time.read_time();
     sun_position.set_mez(mez_now_);
@@ -172,7 +173,7 @@ float OrientationController::deviation_tilt()
     float des_tilt;
     float result;
 
-    des_tilt=this->desired_value_tilt();
+    des_tilt=this->desiredValueTilt();
     result= des_tilt-currentTilt();
     return result;
 }
@@ -182,7 +183,7 @@ float OrientationController::deviation_azimuth()
     float des_azimuth;
     float result;
 
-    des_azimuth=this->desired_value_azimuth();
+    des_azimuth=this->desiredValueAzimuth();
     result=des_azimuth-currentAzimuth();
     return result;
 }
@@ -292,7 +293,7 @@ void OrientationController::orient_panel()
             morning_position_tilt_=false;
             morning_position_turn_=false;
 
-            if(this->desired_value_azimuth()>=MORNING_POS_AZIMUTH && this->desired_value_azimuth()<=UPPER_TURN_ANGLE)
+            if(this->desiredValueAzimuth()>=MORNING_POS_AZIMUTH && this->desiredValueAzimuth()<=UPPER_TURN_ANGLE)
             {
                 /** If the panel's tilt is not good, and the panel is not already
                  * in a tilt motion, start tilting the panel in the right direction */
