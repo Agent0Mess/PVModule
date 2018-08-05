@@ -89,7 +89,7 @@ RtcAdapter::RtcAdapter()
 {
 }
 
-datetime_t RtcAdapter::read_time() {
+datetime_t RtcAdapter::readTime() {
     datetime_t return_time;
     int current_month;
     int current_day_in_month;
@@ -102,13 +102,13 @@ datetime_t RtcAdapter::read_time() {
     current_day_in_month=time_now_.day();
     current_month=time_now_.month();
 
-    return_time.doy=calc_doy(current_day_in_month, current_month);
+    return_time.doy=calcDoy(current_day_in_month, current_month);
 
     return return_time;
 }
 
 
-int RtcAdapter::days_in_month(int month) {
+int RtcAdapter::daysInMonth(int month) {
     int num_days;
     switch (month) {
     case 1: case 3: case 5: case 7: case 8: case 10: case 12:
@@ -128,11 +128,11 @@ int RtcAdapter::days_in_month(int month) {
     return num_days;
 }
 
-int RtcAdapter::calc_doy(int current_day_in_month, int current_month) {
+int RtcAdapter::calcDoy(int current_day_in_month, int current_month) {
     int i=1;
     int doy_month=0;
     for (i=1;i<current_month;i++) {
-        doy_month=doy_month+days_in_month(i);
+        doy_month=doy_month+daysInMonth(i);
     }
     return doy_month+current_day_in_month;
 }

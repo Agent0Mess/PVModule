@@ -26,44 +26,44 @@
 class OrientationController
 {
 private:
-    RtcAdapter current_time;
-    Sunpos sun_position;
-    datetime_t mez_now_;
-    OrientationMeasurement orient_sensor;
-    MotorDriver panel_driver;
+    RtcAdapter current_time;    /**< Object for time reading */
+    Sunpos sun_position;        /**< Object for sun positioin determination*/
+    datetime_t mez_now_;        /**< Current MEZ */
+    OrientationMeasurement orient_sensor;   /**< Object for sensor reading */
+    MotorDriver panel_driver;       /**< Object for panel motion control */
 
-    float desired_tilt_;
-    float desired_azimuth_;
-    float deviation_tilt_;
-    float deviation_azimuth_;
+    float desired_tilt_;        /**< Desired tilt in degrees  */
+    float desired_azimuth_;     /**< Desired azimuth in degrees */
+    float deviation_tilt_;      /**< Deviation tilt from desired tilt in degrees */
+    float deviation_azimuth_;   /**< Deviation azimuth from desired azimuth */
 
-    int direction_tilt_;
-    int direction_turn_;
+    int direction_tilt_;        /**< Current tilting direction */
+    int direction_turn_;        /**< Current turning direction */
 
-    float tolerance_band_tilt_;
-    float tolerance_band_azimuth_;
-    float adjust_precision_azimuth_;
-    float adjust_precision_tilt_;
+    float tolerance_band_tilt_;     /**< Tolerance band for tilt */
+    float tolerance_band_azimuth_;  /**< Tolerance band for azimuth */
+    float adjust_precision_tilt_;       /**< Precision band for tilt */
+    float adjust_precision_azimuth_;    /**< Precision band for azimuth */
 
-    bool sun_is_up_;
+    bool sun_is_up_;    /**< Is the sun up */
 
-    bool is_tilt_running_;
-    bool is_azi_running_;
+    bool is_tilt_running_;  /**< Is the panel tilting */
+    bool is_azi_running_;   /**< Is the panel turning */
 
-    float last_azi_,new_azi_,second_azi_;
-    float last_tilt_,new_tilt_,second_tilt_;
+    float last_azi_,new_azi_,second_azi_;   /**< Values for azimuth blocking detection */
+    float last_tilt_,new_tilt_,second_tilt_;    /**< Values for tilt blocking detection */
 
-    bool morning_position_tilt_;
-    bool morning_position_turn_;
+    bool morning_position_tilt_;    /**< Tilt in morning position in degrees */
+    bool morning_position_turn_;    /**< Azimuth in morning position in degrees */
 
-    bool emergency_stopped_;
+    bool emergency_stopped_;    /**< Is emergency stop active */
 
-    unsigned long turn_check_time_;
-    unsigned long tilt_check_time_;
+    unsigned long turn_check_time_; /**< time for azimuth blocking detection */
+    unsigned long tilt_check_time_; /**< time for tilt blocking detection */
 
-    bool panel_is_blocked_;
+    bool panel_is_blocked_; /**< Is blocking stop active */
 
-    imu::Vector<3> orient_;
+    imu::Vector<3> orient_; /**< Current orientation */
 
 public:
     /**
@@ -81,104 +81,104 @@ public:
      * @brief is_daytime - Checks if the sun has risen
      * @return Returns true, if it is between sunrise and sunset
      */
-    bool is_daytime();
+    bool isDaytime();
 
     /**
-     * @brief Begins RTC and sensor
+     * @brief Begin RTC and sensor
      */
     void begin();
 
     /**
-     * @brief Gets the current offset corrected tilt angle of the panel
+     * @brief Get the current offset corrected tilt angle of the panel
      * @return current tilt angle of the panel in degrees
      */
     float currentTilt();
 
     /**
-     * @brief Gets the current offset corrected azimuth angle of the panel
+     * @brief Get the current offset corrected azimuth angle of the panel
      * @return current azimuth angle in degrees
      */
     float currentAzimuth();
 
     /**
-     * @brief Calculates the desired tilt angle for the current time and day
+     * @brief Calculate the desired tilt angle for the current time and day
      * @return Desired tilt angle in degrees
      */
     float desiredValueTilt();
 
     /**
-     * @brief Calculates the desired azimut angle for the current time and day
+     * @brief Calculate the desired azimut angle for the current time and day
      * @return Desired azimut angle in degrees
      */
     float desiredValueAzimuth();
 
     /**
-     * @brief Gets the deviation of the tilt angle (desired tilt - current tilt)
+     * @brief Get the deviation of the tilt angle (desired tilt - current tilt)
      * @return deviation of the tilt angle in degrees
      */
     float deviationTilt();
 
     /**
-     * @brief Gets the deviation of the azimuth angle (desired azimuth - current azimuth)
+     * @brief Get the deviation of the azimuth angle (desired azimuth - current azimuth)
      * @return deviation of the azimuth angle in degrees
      */
     float deviationAzimuth();
 
     /**
-     * @brief Sets the tilt tolerance band
+     * @brief Set the tilt tolerance band
      * @param Tilt tolerance band in degrees
      */
     void setToleranceBandTilt(float tilt_tol);
 
     /**
-     * @brief Gets the tilt tolerance band
+     * @brief Get the tilt tolerance band
      * @return Tilt tolerance band in degrees
      */
     float getToleranceBandTilt() const;
 
     /**
-     * @brief setToleranceBandAzimuth
-     * @param azi_tol
+     * @brief Set the azimuth tolerance band
+     * @param Azimuth tolerance band in degrees
      */
     void setToleranceBandAzimuth(float azi_tol);
 
     /**
-     * @brief getToleranceBandAzimuth
-     * @return
+     * @brief Get the azimuth tolerance band
+     * @return Azimuth tolerance band in degrees
      */
     float getToleranceBandAzimuth() const;
 
     /**
-     * @brief setAdjustPrecisionTilt
-     * @param tilt_tol
+     * @brief Set the adjust precision band for tilt
+     * @param tilt_tol Tilt precision in degrees
      */
     void setAdjustPrecisionTilt(float tilt_tol);
 
     /**
-     * @brief getAdjustPrecisionTilt
-     * @return
+     * @brief Get the adjust pprecision band for tilt
+     * @return Tilt adjustment precision in degrees
      */
     float getAdjustPrecisionTilt() const;
 
     /**
-     * @brief setAdjustPrecisionAzimuth
-     * @param azi_tol
+     * @brief Set the adjust precision band for azimuth
+     * @param azi_tol Azimuth precision in degrees
      */
     void setAdjustPrecisionAzimuth(float azi_tol);
 
     /**
-     * @brief getAdjustPrecisionAzimuth
-     * @return
+     * @brief Get the adjust pprecision band for azimuth
+     * @return Azimuth adjustment precision in degrees
      */
     float getAdjustPrecisionAzimuth() const;
 
     /**
-     * @brief orientPanel
+     * @brief Main state machine for the panel orientation
      */
     void orientPanel();
 
     /**
-     * @brief stopPanel
+     * @brief Stop the panel's motion
      */
     void stopPanel();
 

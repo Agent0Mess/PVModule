@@ -1,17 +1,51 @@
-    language: c
-    before_install:
-      - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
-      - sleep 3
-      - export DISPLAY=:1.0
-      - wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz
-      - tar xf arduino-1.8.5-linux64.tar.xz
-      - sudo mv arduino-1.8.5 /usr/local/share/arduino
-      - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
-    install:
-      - arduino --install-library "RTClib","SparkFun BNO080 Cortex Based IMU","Adafruit BNO055"
-    script:
-      - arduino --verify --board arduino:avr:uno $PWD/PVModule.ino
-    notifications:
-      email:
-        on_success: change
-        on_failure: change
+    # This will run on Travis' 'new' container-based infrastructure
+sudo: false
+
+# Blacklist
+branches:
+  except:
+    - gh-pages
+
+# Environment variables
+env:
+  global:
+    - GH_REPO_NAME: PVModule
+    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxyfile
+    - GH_REPO_REF: github.com/Agent0Mess/PVModule.git
+
+    
+language: c
+before_install:
+    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
+    - sleep 3
+    - export DISPLAY=:1.0
+    - wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz
+    - tar xf arduino-1.8.5-linux64.tar.xz
+    - sudo mv arduino-1.8.5 /usr/local/share/arduino
+    - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
+      
+      # Install dependencies
+addons:
+    apt:
+        packages:
+            - doxygen
+            - doxygen-doc
+            - doxygen-latex
+            - doxygen-gui
+            - graphviz
+      
+install:
+      - arduino --install-library "RTClib","SparkFun BNO080 Cortex Based IMU","Adafruit BNO055","Adafruit Unified Sensor"
+script:
+    - arduino --verify --board arduino:avr:uno $PWD/PVModule.ino
+notifications:
+    email:
+      on_success: change
+      on_failure: change
+        
+        
+# Generate and deploy documentation
+after_success:
+  - cd $TRAVIS_BUILD_DIR
+  - chmod +x generateDocumentationAndDeploy.sh
+- ./generateDocumentationAndDeploy.sh

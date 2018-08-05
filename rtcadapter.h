@@ -75,14 +75,14 @@ public:
      * @brief read_time - reads the current time and date from RTC
      * @return current time in datetime_t format
      */
-    datetime_t read_time();
+    datetime_t readTime();
 
     /**
      * @brief days_in_month - Simply checks how many days are in a specific month
      * @param month - number of month (e.g. 3 for March)
      * @return number of days in month (e.g. 31 for March)
      */
-    int days_in_month(int month);
+    int daysInMonth(int month);
 
     /**
      * @brief calc_doy - Calculates the day of year (e.g. 2 for 2th January)
@@ -90,7 +90,7 @@ public:
      * @param current_month The month of the date (i.e. mm of dd/mm/yyyy)
      * @return  The number of the day of the year (e.g. 365 for 31th December)
      */
-    int calc_doy(int current_day_in_month, int current_month);
+    int calcDoy(int current_day_in_month, int current_month);
 
 };
 

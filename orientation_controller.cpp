@@ -94,9 +94,9 @@ void OrientationController::begin()
     orient_sensor.enableRotationVector(50);
 }
 
-bool OrientationController::is_daytime()
+bool OrientationController::isDaytime()
 {
-    mez_now_=current_time.read_time();
+    mez_now_=current_time.readTime();
     sun_position.set_mez(mez_now_);
     if ((mez_now_>sun_position.get_srmez()) && (mez_now_<sun_position.get_ssmez()))
     {
@@ -146,14 +146,14 @@ void OrientationController::readSensorData()
 
 float OrientationController::desiredValueTilt()
 {
-    mez_now_=current_time.read_time();
+    mez_now_=current_time.readTime();
     sun_position.set_mez(mez_now_);
     return sun_position.get_pvtiltang();
 }
 
 float OrientationController::desiredValueAzimuth()
 {
-    mez_now_=current_time.read_time();
+    mez_now_=current_time.readTime();
     sun_position.set_mez(mez_now_);
     return sun_position.get_azang();
 }
@@ -288,7 +288,7 @@ void OrientationController::orientPanel()
                 panel_is_blocked_=false;
         }
 
-        if (is_daytime() && (!panel_is_blocked_))
+        if (isDaytime() && (!panel_is_blocked_))
         {
             morning_position_tilt_=false;
             morning_position_turn_=false;
@@ -367,7 +367,7 @@ void OrientationController::orientPanel()
     }
     else
     {
-        if (!is_daytime())
+        if (!isDaytime())
         {
             /** If the panel is not already in its morning position */
             if (morning_position_tilt_==false || morning_position_turn_==false)
