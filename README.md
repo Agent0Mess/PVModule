@@ -12,8 +12,10 @@ in order to align a solar panel respectively.
 Orientation_measure extends the functionalities of the Sparkfun BNO080 IMU library to adapt them for our purposes.
 This means that the respective library must be installed: https://github.com/sparkfun/SparkFun_BNO080_Arduino_Library
 More information about the sensor can be found here: https://www.sparkfun.com/products/14686
-In the course of this project, the BNO055 has also been integrated and tested. However it turned out, that this sensor
-is not suitable for the project and has been discarded.
+In the course of this project, the BNO055 has also been integrated and tested. It turned out, that this sensor
+is not suitable for the project and has been discarded. However, a part of the Adafruit BNO055 library is used,
+for the transformation from Quaternion to Euler. This means, that the followinf library is also needed:  https://github.com/adafruit/Adafruit_BNO055
+
 
 <h3> Real Time Clock </h3>
 In order for the RTC to work properly the following library is used: https://github.com/adafruit/RTClib
