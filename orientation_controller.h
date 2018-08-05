@@ -63,7 +63,7 @@ private:
 
     bool panel_is_blocked_;
 
-
+    imu::Vector<3> orient_;
 
 public:
     /**
@@ -75,7 +75,7 @@ public:
      */
     OrientationController();
 
-        imu::Vector<3> orient_;
+
 
     /**
      * @brief is_daytime - Checks if the sun has risen
@@ -116,52 +116,135 @@ public:
      * @brief Gets the deviation of the tilt angle (desired tilt - current tilt)
      * @return deviation of the tilt angle in degrees
      */
-    float deviation_tilt();
+    float deviationTilt();
 
     /**
      * @brief Gets the deviation of the azimuth angle (desired azimuth - current azimuth)
      * @return deviation of the azimuth angle in degrees
      */
-    float deviation_azimuth();
+    float deviationAzimuth();
 
     /**
      * @brief Sets the tilt tolerance band
      * @param Tilt tolerance band in degrees
      */
-    void set_tolerance_band_tilt(float tilt_tol);
+    void setToleranceBandTilt(float tilt_tol);
 
     /**
      * @brief Gets the tilt tolerance band
      * @return Tilt tolerance band in degrees
      */
-    float get_tolerance_band_tilt() const;
+    float getToleranceBandTilt() const;
 
-    void set_tolerance_band_azimuth(float azi_tol);
-    float get_tolerance_band_azimuth() const;
+    /**
+     * @brief setToleranceBandAzimuth
+     * @param azi_tol
+     */
+    void setToleranceBandAzimuth(float azi_tol);
 
-    void set_adjust_precision_tilt(float tilt_tol);
-    float get_adjust_precision_tilt() const;
+    /**
+     * @brief getToleranceBandAzimuth
+     * @return
+     */
+    float getToleranceBandAzimuth() const;
 
-    void set_adjust_precision_azimuth(float azi_tol);
-    float get_adjust_precision_azimuth() const;
+    /**
+     * @brief setAdjustPrecisionTilt
+     * @param tilt_tol
+     */
+    void setAdjustPrecisionTilt(float tilt_tol);
 
-    void orient_panel();
-    void stop_panel();
+    /**
+     * @brief getAdjustPrecisionTilt
+     * @return
+     */
+    float getAdjustPrecisionTilt() const;
 
-    datetime_t getMez_now() const;
+    /**
+     * @brief setAdjustPrecisionAzimuth
+     * @param azi_tol
+     */
+    void setAdjustPrecisionAzimuth(float azi_tol);
 
+    /**
+     * @brief getAdjustPrecisionAzimuth
+     * @return
+     */
+    float getAdjustPrecisionAzimuth() const;
+
+    /**
+     * @brief orientPanel
+     */
+    void orientPanel();
+
+    /**
+     * @brief stopPanel
+     */
+    void stopPanel();
+
+    /**
+     * @brief getMezNow
+     * @return
+     */
+    datetime_t getMezNow() const;
+
+    /**
+     * @brief readSensorData
+     */
     void readSensorData();
+
+    /**
+     * @brief getIsAziRunning
+     * @return
+     */
     bool getIsAziRunning() const;
+
+    /**
+     * @brief getIsTiltRunning
+     * @return
+     */
     bool getIsTiltRunning() const;
+
+    /**
+     * @brief getSunIsUp
+     * @return
+     */
     bool getSunIsUp() const;
 
-    float deviation_tilt_morning_pos();
-    float deviation_azimuth_morning_pos();
+    /**
+     * @brief deviationTiltMorningPos
+     * @return
+     */
+    float deviationTiltMorningPos();
 
+    /**
+     * @brief deviationAzimuthMorningPos
+     * @return
+     */
+    float deviationAzimuthMorningPos();
+
+    /**
+     * @brief getEmergencyStopped
+     * @return
+     */
     bool getEmergencyStopped() const;
 
+    /**
+     * @brief checkIsPanelTilting
+     * @return
+     */
     bool checkIsPanelTilting();
+
+    /**
+     * @brief checkIsPanelTurning
+     * @return
+     */
     bool checkIsPanelTurning();
+
+    /**
+     * @brief getPanelIsBlocked
+     * @return
+     */
     bool getPanelIsBlocked() const;
 };
 

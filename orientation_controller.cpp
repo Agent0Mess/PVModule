@@ -6,7 +6,7 @@
 #define OFFSET_TILT 61.0
 #define OFFSET_AZIMUTH 82.0
 
-datetime_t OrientationController::getMez_now() const
+datetime_t OrientationController::getMezNow() const
 {
     return mez_now_;
 }
@@ -74,10 +74,10 @@ bool OrientationController::getPanelIsBlocked() const
 
 OrientationController::OrientationController()
 {
-    set_tolerance_band_azimuth(5.5);
-    set_adjust_precision_azimuth(3.5);
-    set_tolerance_band_tilt(3.0);
-    set_adjust_precision_tilt(2.0);
+    setToleranceBandAzimuth(5.5);
+    setAdjustPrecisionAzimuth(3.5);
+    setToleranceBandTilt(3.0);
+    setAdjustPrecisionTilt(2.0);
     emergency_stopped_=false;
     panel_is_blocked_=false;
     turn_check_time_=0;
@@ -137,7 +137,7 @@ void OrientationController::readSensorData()
      * stop the motors and try to restart the sensor */
     if (is_sensor_read==false || wait_counter>=20)
     {
-        stop_panel();
+        stopPanel();
         emergency_stopped_=true;
         orient_sensor.softReset();
         begin();
@@ -168,7 +168,7 @@ float OrientationController::currentAzimuth()
     return fmod((-orient_.x())+OFFSET_AZIMUTH+360.0,360);
 }
 
-float OrientationController::deviation_tilt()
+float OrientationController::deviationTilt()
 {
     float des_tilt;
     float result;
@@ -178,7 +178,7 @@ float OrientationController::deviation_tilt()
     return result;
 }
 
-float OrientationController::deviation_azimuth()
+float OrientationController::deviationAzimuth()
 {
     float des_azimuth;
     float result;
@@ -188,7 +188,7 @@ float OrientationController::deviation_azimuth()
     return result;
 }
 
-float OrientationController::deviation_tilt_morning_pos()
+float OrientationController::deviationTiltMorningPos()
 {
     float des_tilt;
     float result;
@@ -202,7 +202,7 @@ float OrientationController::deviation_tilt_morning_pos()
     return result;
 }
 
-float OrientationController::deviation_azimuth_morning_pos()
+float OrientationController::deviationAzimuthMorningPos()
 {
     float des_azimuth;
     float result;
@@ -216,43 +216,43 @@ float OrientationController::deviation_azimuth_morning_pos()
     return result;
 }
 
-void OrientationController::set_tolerance_band_tilt(float tilt_tol)
+void OrientationController::setToleranceBandTilt(float tilt_tol)
 {
     tolerance_band_tilt_=tilt_tol;
 }
-float OrientationController::get_tolerance_band_tilt() const
+float OrientationController::getToleranceBandTilt() const
 {
     return tolerance_band_tilt_;
 }
 
-void OrientationController::set_tolerance_band_azimuth(float azi_tol)
+void OrientationController::setToleranceBandAzimuth(float azi_tol)
 {
     tolerance_band_azimuth_=azi_tol;
 }
-float OrientationController::get_tolerance_band_azimuth() const
+float OrientationController::getToleranceBandAzimuth() const
 {
     return tolerance_band_azimuth_;
 }
 
-void OrientationController::set_adjust_precision_tilt(float tilt_adj)
+void OrientationController::setAdjustPrecisionTilt(float tilt_adj)
 {
     adjust_precision_tilt_=tilt_adj;
 }
-float OrientationController::get_adjust_precision_tilt() const
+float OrientationController::getAdjustPrecisionTilt() const
 {
     return adjust_precision_tilt_;
 }
 
-void OrientationController::set_adjust_precision_azimuth(float azi_adj)
+void OrientationController::setAdjustPrecisionAzimuth(float azi_adj)
 {
     adjust_precision_azimuth_=azi_adj;
 }
-float OrientationController::get_adjust_precision_azimuth() const
+float OrientationController::getAdjustPrecisionAzimuth() const
 {
     return adjust_precision_azimuth_;
 }
 
-void OrientationController::orient_panel()
+void OrientationController::orientPanel()
 {
     this->readSensorData();
 
@@ -271,7 +271,7 @@ void OrientationController::orient_panel()
         {
             if (is_azi_running_ && !checkIsPanelTurning())
             {
-                stop_panel();
+                stopPanel();
                 panel_is_blocked_=true;
             }
             else
@@ -281,7 +281,7 @@ void OrientationController::orient_panel()
         {
             if (is_tilt_running_ && !checkIsPanelTilting())
             {
-                stop_panel();
+                stopPanel();
                 panel_is_blocked_=true;
             }
             else
@@ -297,29 +297,29 @@ void OrientationController::orient_panel()
             {
                 /** If the panel's tilt is not good, and the panel is not already
                  * in a tilt motion, start tilting the panel in the right direction */
-                if ((abs(deviation_tilt())>tolerance_band_tilt_)&& !is_tilt_running_)
+                if ((abs(deviationTilt())>tolerance_band_tilt_)&& !is_tilt_running_)
                 {
-                    if ((deviation_tilt()<0))
+                    if ((deviationTilt()<0))
                     {
                         is_tilt_running_=panel_driver.run_tilt_panel_vertical();
                         direction_tilt_=1;
                     }
-                    else if(deviation_tilt()>0)
+                    else if(deviationTilt()>0)
                     {
                         is_tilt_running_=panel_driver.run_tilt_panel_horizontal();
                         direction_tilt_=2;
                     }
                 }
                 /** If the panel has reached a good tilt, stop */
-                else if (abs(deviation_tilt())<=adjust_precision_tilt_)
+                else if (abs(deviationTilt())<=adjust_precision_tilt_)
                 {
                     panel_driver.stop_tilt_panel();
                     is_tilt_running_=false;
                     direction_tilt_=0;
                 }
                 /** If the panel has tilted too far, stop */
-                else if ((deviation_tilt()>0 && direction_tilt_==1) ||
-                         deviation_tilt()<0 && direction_tilt_==2)
+                else if ((deviationTilt()>0 && direction_tilt_==1) ||
+                         deviationTilt()<0 && direction_tilt_==2)
                 {
                     panel_driver.stop_tilt_panel();
                     is_tilt_running_=false;
@@ -327,29 +327,29 @@ void OrientationController::orient_panel()
                 }
                 /** If the panel's turn (azimuth) is not good, and the panel is not already
                   * in a turning motion, start turning the panel in the right direction */
-                if ((abs(deviation_azimuth())>tolerance_band_azimuth_)&& !is_azi_running_)
+                if ((abs(deviationAzimuth())>tolerance_band_azimuth_)&& !is_azi_running_)
                 {
-                    if ((deviation_azimuth()<0))
+                    if ((deviationAzimuth()<0))
                     {
                         is_azi_running_=panel_driver.run_turn_panel_cw();
                         direction_turn_=1;
                     }
-                    else if(deviation_azimuth()>0)
+                    else if(deviationAzimuth()>0)
                     {
                         is_azi_running_=panel_driver.run_turn_panel_ccw();
                         direction_turn_=2;
                     }
                 }
                 /** If the panel has reached a good turn position, stop */
-                else if (abs(deviation_azimuth())<=adjust_precision_azimuth_)
+                else if (abs(deviationAzimuth())<=adjust_precision_azimuth_)
                 {
                     panel_driver.stop_turn_panel();
                     is_azi_running_=false;
                     direction_turn_=0;
                 }
                 /** If the panel has turned too far, stop */
-                else if ((deviation_azimuth()>0 && direction_turn_==1) ||
-                         deviation_azimuth()<0 && direction_turn_==2)
+                else if ((deviationAzimuth()>0 && direction_turn_==1) ||
+                         deviationAzimuth()<0 && direction_turn_==2)
                 {
                     panel_driver.stop_turn_panel();
                     is_azi_running_=false;
@@ -374,21 +374,21 @@ void OrientationController::orient_panel()
             {
                 /** If the panel's tilt is not good, and the panel is not already
                 * in a tilt motion, start tilting the panel in the right direction */
-                if ((abs(deviation_tilt_morning_pos())>tolerance_band_tilt_)&& !is_tilt_running_)
+                if ((abs(deviationTiltMorningPos())>tolerance_band_tilt_)&& !is_tilt_running_)
                 {
-                    if ((deviation_tilt_morning_pos()<0))
+                    if ((deviationTiltMorningPos()<0))
                     {
                         is_tilt_running_=panel_driver.run_tilt_panel_vertical();
                         direction_tilt_=1;
                     }
-                    else if(deviation_tilt_morning_pos()>0)
+                    else if(deviationTiltMorningPos()>0)
                     {
                         is_tilt_running_=panel_driver.run_tilt_panel_horizontal();
                         direction_tilt_=2;
                     }
                 }
                 /** If the panel has reached a good tilt, stop */
-                else if (abs(deviation_tilt_morning_pos())<=adjust_precision_tilt_)
+                else if (abs(deviationTiltMorningPos())<=adjust_precision_tilt_)
                 {
                     panel_driver.stop_tilt_panel();
                     is_tilt_running_=false;
@@ -396,8 +396,8 @@ void OrientationController::orient_panel()
                     morning_position_tilt_=true;
                 }
                 /** If the panel has tilted too far, stop */
-                else if ((deviation_tilt_morning_pos()>0 && direction_tilt_==1) ||
-                         deviation_tilt_morning_pos()<0 && direction_tilt_==2)
+                else if ((deviationTiltMorningPos()>0 && direction_tilt_==1) ||
+                         deviationTiltMorningPos()<0 && direction_tilt_==2)
                 {
                     panel_driver.stop_tilt_panel();
                     is_tilt_running_=false;
@@ -405,13 +405,13 @@ void OrientationController::orient_panel()
                 }
                 /** If the panel's turn (azimuth) is not good, and the panel is not already
                   * in a turning motion, start turning the panel in the cw direction */
-                if ((abs(deviation_azimuth_morning_pos())>tolerance_band_azimuth_)&& !is_azi_running_)
+                if ((abs(deviationAzimuthMorningPos())>tolerance_band_azimuth_)&& !is_azi_running_)
                 {
                     is_azi_running_=panel_driver.run_turn_panel_cw();
                     direction_turn_=1;
                 }
                 /** If the panel has reached a good turn position, stop */
-                else if (abs(deviation_azimuth_morning_pos())<=tolerance_band_azimuth_)
+                else if (abs(deviationAzimuthMorningPos())<=tolerance_band_azimuth_)
                 {
                     panel_driver.stop_turn_panel();
                     is_azi_running_=false;
@@ -424,7 +424,7 @@ void OrientationController::orient_panel()
 }
 
 
-void OrientationController::stop_panel()
+void OrientationController::stopPanel()
 {
     panel_driver.stop_turn_panel();
     panel_driver.stop_tilt_panel();

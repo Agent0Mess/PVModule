@@ -94,13 +94,13 @@ datetime_t RtcAdapter::read_time() {
     int current_month;
     int current_day_in_month;
 
-    time_now = this->now();
-    return_time.sec= time_now.second();
-    return_time.min= time_now.minute();
-    return_time.hour=time_now.hour();
+    time_now_ = this->now();
+    return_time.sec= time_now_.second();
+    return_time.min= time_now_.minute();
+    return_time.hour=time_now_.hour();
 
-    current_day_in_month=time_now.day();
-    current_month=time_now.month();
+    current_day_in_month=time_now_.day();
+    current_month=time_now_.month();
 
     return_time.doy=calc_doy(current_day_in_month, current_month);
 

@@ -26,7 +26,7 @@ void setup(void)
     PanelControl.begin();
 
     Serial.println("Orient Sensor Test"); Serial.println("");
-    PanelControl.stop_panel();
+    PanelControl.stopPanel();
     digitalWrite(LEDPIN,LOW);
 }
 
@@ -90,7 +90,7 @@ void loop(void)
         }
     }
 
-    PanelControl.orient_panel();
+    PanelControl.orientPanel();
 
     if(millis()+1000<millis())
     {

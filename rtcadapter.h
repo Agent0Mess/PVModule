@@ -15,19 +15,47 @@
 
 #include <RTClib.h>
 
-
+/**
+ * @brief The datetime_t struct, for date and time related processing
+ */
 struct datetime_t {
-    long int sec;
-    long int min;
-    long int hour;
-    int      doy;                             /**< Day of Year; first January = 1*/
+    long int sec; /**< Seconds */
+    long int min; /**< Minutes */
+    long int hour; /**< Hours */
+    int      doy;  /**< Day of Year; first January = 1*/
 
+    /**
+     * @brief Updates format, so that seconds and minutes do not exceed 59 and hours 23
+     * @param falseform Time in the false form
+     * @return time in the right form
+     */
     datetime_t update_format( datetime_t& falseform);
 
+    /**
+     * @brief Adds two times
+     * @param time2 Time added to the first time
+     * @return Sum of the times
+     */
     datetime_t operator + (const datetime_t& time2);
-    datetime_t operator - (const datetime_t& time2);
 
+    /**
+     * @brief Subtracts time2
+     * @param time2 Time subtracted
+     * @return time - time2
+     */
+    datetime_t operator - (const datetime_t& time2);
+    /**
+     * @brief Checks if datetime is earlier than time2
+     * @param time2 Second time term
+     * @return True if first term is earlier, false othrewise
+     */
     bool operator < (const datetime_t& time2);
+
+    /**
+     * @brief Checks first term is later than second term
+     * @param time2 Second time term
+     * @return True if first term is later, false otherwise
+     */
     bool operator > (const datetime_t& time2);
 };
 
@@ -35,7 +63,7 @@ struct datetime_t {
 class RtcAdapter : public RTC_DS3231
 {
 private:
-    DateTime time_now;
+    DateTime time_now_; /**< Current time */
 
 public:
     /**
